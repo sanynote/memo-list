@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from "firebase/auth";
+import {signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider,signInWithPopup} from "firebase/auth";
 import {authFire} from "./firebase";
 
 function App() {
@@ -8,6 +8,18 @@ function App() {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("　");
   const [user,setUser] = useState({})
+
+  const googleButton = () => {
+    const provider = new GoogleAuthProvider(); // provider를 구글로 설정
+    signInWithPopup(authFire, provider) // popup을 이용한 signup
+      .then((data) => {
+        setUser(data.user); // user data 설정
+        console.log(data.user.uid) // console로 들어온 데이터 표시
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   const signInButton = async() => {
     try {
@@ -48,20 +60,10 @@ function App() {
   }
   return (
     <div className="backArea">
-      <form>
-        <h2>
-        gmail로 로그인
-        </h2>
-        <div>
+      <div>
 
-        <label>g-mail</label><input type='email' />
-        </div>
-        <div>
-
-        <label>password</label><input type='password' />
-        </div>
-        <button>로그인</button>
-      </form>
+        <button onClick ={()=>googleButton()}>구글 계정 로그인</button>
+      </div>
       <div>
         <h2>
           email로 회원가입 or 로그인
@@ -75,7 +77,6 @@ function App() {
         <button type = "submit" onClick={()=>signInButton()}>로그인</button>
         <button type="submit" onClick={()=>signUpButton()}>회원가입하기</button>
       </div>
-
 
     </div>
   );
