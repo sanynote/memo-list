@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import '../../App.css';
 import {
   signInWithEmailAndPassword,
@@ -9,22 +9,12 @@ import {
 } from "firebase/auth";
 import {authFire} from "../../firebase";
 import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../../auth.context.provider";
+
 
 
 function AuthPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [init, setInit] = useState(false);
-  console.log(isLoggedIn)
-  React.useEffect(() => {
-    onAuthStateChanged(authFire, (user) => {
-      if(user) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-      setInit(true);
-    });
-  }, [])
+  const  isLoggedIn  = useContext(AuthContext);
 
   const [user, setUser] = useState({})
   const [email, setEmail] = useState("");
@@ -51,7 +41,7 @@ function AuthPage() {
       const curUserInfo = await signInWithEmailAndPassword(authFire, email, password);
       console.log(curUserInfo.user, 'ssss');
       setUser(curUserInfo.user);
-      // navigate('/list')
+      navigate('/list')
     } catch (err: any) {
       console.log(err.code, 'eeee');
       /*
@@ -87,25 +77,33 @@ function AuthPage() {
   return (
 
     <div className="backArea">
-      <div>
-        <button onClick={() => googleButton()}>구글 계정 로그인</button>
-      </div>
-      <div>
-        <h2>
-          email로 회원가입 or 로그인
-        </h2>
-        <div>
-          <label>e-mail</label><input type='email' value={email} onChange={e => setEmail(e.target.value)}/>
-        </div>
-        <div>
-          <label>password</label><input type='password' value={password} onChange={e => setPassword(e.target.value)}/>
-        </div>
-        <button type="submit" onClick={() => signInButton()}>로그인</button>
-        <button type="submit" onClick={() => signUpButton()}>회원가입하기</button>
+      {isLoggedIn ? '로그인이 된 상태입니다.' :
+
+        (
+          <>
+            <div>
+              <button onClick={() => googleButton()}>구글 계정 로그인</button>
             </div>
-      <div>
-        {isLoggedIn ? authFire.currentUser?.email : '로그인 안됨'}
-      </div>
+            <div>
+              <h2>
+                email로 회원가입 or 로그인
+              </h2>
+              <div>
+                <label>e-mail</label><input type='email' value={email} onChange={e => setEmail(e.target.value)}/>
+              </div>
+              <div>
+                <label>password</label><input type='password' value={password} onChange={e => setPassword(e.target.value)}/>
+              </div>
+              <button type="submit" onClick={() => signInButton()}>로그인</button>
+              <button type="submit" onClick={() => signUpButton()}>회원가입하기</button>
+            </div>
+            <div>
+              {isLoggedIn ? authFire.currentUser?.email : null}
+            </div>
+          </>
+        )
+      }
+
     </div>
   );
 }
