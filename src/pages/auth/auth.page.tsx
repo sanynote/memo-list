@@ -1,12 +1,32 @@
 import React, {useState} from 'react';
 import '../../App.css';
-import {signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider,signInWithPopup} from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged
+} from "firebase/auth";
 import {authFire} from "../../firebase";
 import {useNavigate} from "react-router-dom";
 
 
 function AuthPage() {
-  const [user,setUser] = useState({})
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [init, setInit] = useState(false);
+  console.log(isLoggedIn)
+  React.useEffect(() => {
+    onAuthStateChanged(authFire, (user) => {
+      if(user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+      setInit(true);
+    });
+  }, [])
+
+  const [user, setUser] = useState({})
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("　");
@@ -26,14 +46,14 @@ function AuthPage() {
       });
   }
 
-  const signInButton = async() => {
+  const signInButton = async () => {
     try {
       const curUserInfo = await signInWithEmailAndPassword(authFire, email, password);
-      console.log(curUserInfo.user,'ssss');
+      console.log(curUserInfo.user, 'ssss');
       setUser(curUserInfo.user);
       // navigate('/list')
     } catch (err: any) {
-      console.log(err.code,'eeee');
+      console.log(err.code, 'eeee');
       /*
       입력한 아이디가 없을 경우 : auth/user-not-found.
       비밀번호가 잘못된 경우 : auth/wrong-password.
@@ -41,7 +61,7 @@ function AuthPage() {
     }
   }
 
-  const signUpButton = async() => {
+  const signUpButton = async () => {
     try {
       setErrorMsg('　');
       const createdUser = await createUserWithEmailAndPassword(authFire, email, password);
@@ -49,7 +69,7 @@ function AuthPage() {
       setEmail("");
       setPassword("");
 
-    } catch(err:any){
+    } catch (err: any) {
       console.log(err.code, errorMsg);
       switch (err.code) {
         case 'auth/weak-password':
@@ -68,25 +88,24 @@ function AuthPage() {
 
     <div className="backArea">
       <div>
-
-        <button onClick ={()=>googleButton()}>구글 계정 로그인</button>
+        <button onClick={() => googleButton()}>구글 계정 로그인</button>
       </div>
       <div>
         <h2>
           email로 회원가입 or 로그인
         </h2>
         <div>
-          <label>e-mail</label><input type='email' value={email} onChange={e=>setEmail(e.target.value)}/>
+          <label>e-mail</label><input type='email' value={email} onChange={e => setEmail(e.target.value)}/>
         </div>
         <div>
-          <label>password</label><input type='password' value={password} onChange={e=>setPassword(e.target.value)}/>
+          <label>password</label><input type='password' value={password} onChange={e => setPassword(e.target.value)}/>
         </div>
-        <button type = "submit" onClick={()=>signInButton()}>로그인</button>
-        <button type="submit" onClick={()=>signUpButton()}>회원가입하기</button>
+        <button type="submit" onClick={() => signInButton()}>로그인</button>
+        <button type="submit" onClick={() => signUpButton()}>회원가입하기</button>
+            </div>
+      <div>
+        {isLoggedIn ? authFire.currentUser?.email : '로그인 안됨'}
       </div>
-<div>
-  {authFire.currentUser && authFire.currentUser.email}
-</div>
     </div>
   );
 }

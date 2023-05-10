@@ -8,9 +8,9 @@ function List() {
   }
   return (
     <>
-    <div>메모 리스트 페이지</div>
-      <div onClick={()=>signOutButton()}>로그아웃</div>
-  {authFire.currentUser && authFire.currentUser.email}
+      <div>메모 리스트 페이지</div>
+      <div onClick={() => signOutButton()}>로그아웃</div>
+      {authFire.currentUser && authFire.currentUser.email}
     </>
   );
 }
