@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  onAuthStateChanged, signOut
+  signOut
 } from "firebase/auth";
 import {authFire} from "../../firebase";
 import {useNavigate} from "react-router-dom";
@@ -15,8 +15,6 @@ import {AuthContext} from "../../auth.context.provider";
 
 function AuthPage() {
   const  isLoggedIn  = useContext(AuthContext);
-
-  const [user, setUser] = useState({})
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("　");
@@ -27,7 +25,7 @@ function AuthPage() {
     const provider = new GoogleAuthProvider();
     signInWithPopup(authFire, provider)
       .then((data) => {
-        setUser(data.user);
+        localStorage.setItem('uid',data.user.uid)
         navigate('/list')
         console.log(data.user.email)
       })
@@ -41,7 +39,6 @@ function AuthPage() {
       const curUserInfo = await signInWithEmailAndPassword(authFire, email, password);
       console.log(curUserInfo.user.uid, 'uid');
       localStorage.setItem('uid',curUserInfo.user.uid)
-      setUser(curUserInfo.user);
       navigate('/list')
     } catch (err: any) {
       console.log(err.code, 'eeee');

@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {authFire} from "../../firebase";
 import {onAuthStateChanged, signOut} from "firebase/auth";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
 import {collection, getDocs} from "firebase/firestore";
 import {db} from "../../firebase";
@@ -11,6 +11,7 @@ import MemoCreate from "./memo.create";
 type MemoListType = {
   title:string,
   contents:string
+  id:string
 }[];
 
 function List() {
@@ -41,10 +42,10 @@ function List() {
       const data = doc.data()
       return {
         title:data.title,
-        contents:data.contents
+        contents:data.contents,
+        id:doc.id
       }
     })
-    console.log(newMemoData, '121212')
     setMemoList(newMemoData)
 
   }
@@ -56,14 +57,20 @@ function List() {
           <div className='listMemoArea'>
             {memoList.map((item,index)=>{
               return(
-                <div key={index} className='listMemoEachLine'>
+                <div key={index} className='listMemoEachLine' >
+                  <Link to={`${item.id}`}>
+
+
                   {item.title}
+                  {item.id}
+                  </Link>
                 </div>
               )
             })}
-            <div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>
           </div>
           <MemoCreate/>
+            <div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>
+
 
         </>
       ) : (
