@@ -39,7 +39,8 @@ function AuthPage() {
   const signInButton = async () => {
     try {
       const curUserInfo = await signInWithEmailAndPassword(authFire, email, password);
-      console.log(curUserInfo.user, 'ssss');
+      console.log(curUserInfo.user.uid, 'uid');
+      localStorage.setItem('uid',curUserInfo.user.uid)
       setUser(curUserInfo.user);
       navigate('/list')
     } catch (err: any) {

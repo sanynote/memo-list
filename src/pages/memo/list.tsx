@@ -3,9 +3,15 @@ import {authFire} from "../../firebase";
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
+import MemoCreate from "./memo.create";
+import {collection, getDocs} from "firebase/firestore";
+import {db} from "../../firebase";
 
 function List() {
   const isLoggedIn = useContext(AuthContext);
+  React.useEffect(() => {
+    getMemos().then()
+  }, [])
 
   // React.useEffect(()=>{
   //   if(!isLoggedIn){
@@ -21,17 +27,33 @@ function List() {
   const navigate = useNavigate()
   const signOutButton = async () => {
     await signOut(authFire)
+    localStorage.removeItem('uid')
     navigate('/signin')
+  }
+
+  const getMemos = async () => {
+    const querySnapshot = await getDocs(collection(db, "memos"));
+    // querySnapshot.forEach((doc) => {
+    //   // 가져온 모든 문서들을 확인
+    //   console.log(doc.id, " => ", doc.data());
+    // });
+
+    console.log(querySnapshot,'ffff')
   }
 
   return (
     <>
       {isLoggedIn ? (
-        <div>
-          {authFire.currentUser?.email}님 메모리스트입니다.
-          <div onClick={() => signOutButton()}>로그아웃</div>
-        </div>
-      ) :(
+        <>
+          <div>
+            {authFire.currentUser?.uid} 메모리스트입니다.
+
+
+            <div onClick={() => signOutButton()}>로그아웃</div>
+          </div>
+          <MemoCreate/>
+        </>
+      ) : (
         <div>로그인 해주세요</div>
       )
       }

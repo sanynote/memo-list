@@ -6,13 +6,10 @@ import {AuthContextProvider} from "./auth.context.provider";
 
 
 function App() {
-
-
   return (
     <AuthContextProvider>
       <RouterProvider router={router}/>
     </AuthContextProvider>
-
   );
 }
 
