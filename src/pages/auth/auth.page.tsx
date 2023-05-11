@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  onAuthStateChanged
+  onAuthStateChanged, signOut
 } from "firebase/auth";
 import {authFire} from "../../firebase";
 import {useNavigate} from "react-router-dom";
@@ -75,10 +75,16 @@ function AuthPage() {
       }
     }
   }
+  const signOutButton = async () => {
+    await signOut(authFire)
+    localStorage.removeItem('uid')
+    navigate('/signin')
+  }
+
   return (
 
     <div className="backArea">
-      {isLoggedIn ? '로그인이 된 상태입니다.' :
+      {isLoggedIn ? <div onClick={() => signOutButton()}>로그아웃</div> :
 
         (
           <>
@@ -97,9 +103,6 @@ function AuthPage() {
               </div>
               <button type="submit" onClick={() => signInButton()}>로그인</button>
               <button type="submit" onClick={() => signUpButton()}>회원가입하기</button>
-            </div>
-            <div>
-              {isLoggedIn ? authFire.currentUser?.email : null}
             </div>
           </>
         )

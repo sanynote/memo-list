@@ -8,7 +8,7 @@ export const AuthContextProvider = ({children}: any) => {
   const uidCheck = localStorage.getItem('uid') ? true : false
   const [isLoggedIn, setIsLoggedIn] = React.useState(uidCheck);
   const [init, setInit] = React.useState(false);
- console.log( localStorage.getItem('uid'),'ddd')
+  console.log(localStorage.getItem('uid'), 'ddd')
   console.log(isLoggedIn, '이게진짜로그이인')
   React.useEffect(() => {
     onAuthStateChanged(authFire, (user) => {
