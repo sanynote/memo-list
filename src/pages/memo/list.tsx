@@ -1,6 +1,6 @@
 import React from 'react';
 import {authFire} from "../../firebase";
-import { signOut} from "firebase/auth";
+import {signOut} from "firebase/auth";
 import {Link, useNavigate, Outlet, useLocation} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
 import {collection, getDocs} from "firebase/firestore";
@@ -9,9 +9,9 @@ import './list.css'
 import MemoCreate from "./memo.create";
 
 type MemoListType = {
-  title:string,
-  contents:string
-  id:string
+  title: string,
+  contents: string
+  id: string
 }[];
 
 function List() {
@@ -20,8 +20,11 @@ function List() {
   const [memoList, setMemoList] = React.useState<MemoListType>([])
   const location = useLocation();
   React.useEffect(() => {
-    getMemos().then()
-  }, [])
+    isLoggedIn && getMemos().then()
+    console.log('리렌더링되길')
+  }, [location])
+
+  // 여기에 location을 넣으면 리렌더링 되어서 글 작성 직후에도 리렌더링이 되는데 그럼 그냥 글만 읽을지라도 리렌더링이 계속 되어서 성능에 안 좋을듯함
 
   React.useEffect(() => {
     if (!isLoggedIn) {
@@ -31,9 +34,9 @@ function List() {
   }, [])
   const [outlet, setOutlet] = React.useState(false);
   React.useEffect(() => {
-    const { pathname } = location;
+    const {pathname} = location;
     const splitPathName = pathname.split("/");
-    if(splitPathName.length>2) setOutlet(true)
+    if (splitPathName.length > 2) setOutlet(true)
     else setOutlet(false)
   }, [location]);
 
@@ -49,43 +52,39 @@ function List() {
     const newMemoData = memoData.docs.map((doc) => {
       const data = doc.data()
       return {
-        title:data.title,
-        contents:data.contents,
-        id:doc.id
+        title: data.title,
+        contents: data.contents,
+        id: doc.id
       }
     })
     setMemoList(newMemoData)
 
   }
 
-  if (outlet) return <Outlet />;
+  if (outlet) return <Outlet/>;
+  if (!isLoggedIn) return <div>로그인이 필요한 페이지입니다.</div>
 
   return (
     <>
-      {isLoggedIn ? (
-        <>
-          <div className='listMemoArea'>
-            {memoList.map((item,index)=>{
-              return(
-                <div key={index} className='listMemoEachLine' onClick={()=>navigate(`detail/${item.id}`)} >
-                  {item.title}
-                  {item.id}
-                </div>
-              )
-            })}
-          </div>
-          <MemoCreate/>
-            <div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>
 
+      <div className='listMemoArea'>
+        {memoList.map((item, index) => {
+          return (
+            <div key={index} className='listMemoEachLine' onClick={() => navigate(`detail/${item.id}`)}>
+              {item.title}
+              {item.id}
+            </div>
+          )
+        })}
+      </div>
+      <div className='listMemoCreate' onClick={() => navigate(`write/write`)}>글쓰기 버튼</div>
+      <div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>
 
-        </>
-      ) : (
-        <div>로그인 해주세요</div>
-      )
-      }
 
     </>
-  );
+  )
+
+
 }
 
 export default List;

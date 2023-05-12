@@ -4,6 +4,7 @@ import AuthPage from "../pages/auth/auth.page";
 import List from "../pages/memo/list";
 import React from "react";
 import MemoDetail from "../pages/memo/memo.detail";
+import MemoCreate from "../pages/memo/memo.create";
 
 const routes = [
   {
@@ -27,6 +28,10 @@ const routes = [
       {
         path: "detail/:id",
         element:<MemoDetail/>
+      },
+      {
+        path: "write/write",
+        element:<MemoCreate/>
       },
     ]
   }

@@ -7,7 +7,14 @@
     border-bottom: medium dashed black;
 }
 
+.listMemoCreate {
+    margin-top: 4px;
+    background-color: orchid;
+}
+
 .listMemoSignout {
     margin-top: 4px;
     background-color: cadetblue;
 }
+
+

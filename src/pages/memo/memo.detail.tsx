@@ -28,7 +28,7 @@ function MemoDetail() {
 
   const getDetailMemo = async () => {
     try {
-      const docRef = doc(db, uid, test);
+      const docRef = doc(db, uid, '0lccKqCletRHLS3GRbzD');
       const memoData = await getDoc(docRef);
       const memoDetail = memoData.data()
       setMemoTitle(memoDetail!['title'])
@@ -41,11 +41,16 @@ function MemoDetail() {
 
   console.log(memoTitle,memoContents)
 
+  const removeMemo = () => {
+    console.log(test,'메모 삭제하기')
+  }
+
   return (
     <div>
       <div>디테일페이지</div>
      <div>{memoTitle}</div>
       <div>{memoContents}</div>
+      <div onClick={()=>removeMemo()}>메모 삭제 버튼</div>
     </div>
   );
 }

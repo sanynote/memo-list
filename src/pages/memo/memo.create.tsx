@@ -2,11 +2,13 @@ import React from 'react';
 import {collection, addDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import './memo.create.css'
+import {useNavigate} from "react-router-dom";
 
 function MemoCreate() {
   const uid = localStorage.getItem('uid')!
   const [memoTitle, setMemoTitle] = React.useState("")
   const [memoContents, setMemoContents] = React.useState("")
+  const navigate = useNavigate()
 
   const createMemo = async () => {
     try {
@@ -15,6 +17,7 @@ function MemoCreate() {
         contents: memoContents,
       });
       console.log("Document written with ID: ", docRef.id);
+      navigate(`/list`)
     } catch (e) {
       console.error("Error adding document: ", e);
     }
