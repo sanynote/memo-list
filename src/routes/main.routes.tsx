@@ -25,7 +25,7 @@ const routes = [
     element:<List/>,
     children:[
       {
-        path: ":id",
+        path: "detail/:id",
         element:<MemoDetail/>
       },
     ]

@@ -1,7 +1,7 @@
-import React, {useContext, useState} from 'react';
+import React from 'react';
 import {authFire} from "../../firebase";
-import {onAuthStateChanged, signOut} from "firebase/auth";
-import {Link, useNavigate} from "react-router-dom";
+import { signOut} from "firebase/auth";
+import {Link, useNavigate, Outlet, useLocation} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
 import {collection, getDocs} from "firebase/firestore";
 import {db} from "../../firebase";
@@ -15,9 +15,10 @@ type MemoListType = {
 }[];
 
 function List() {
-  const isLoggedIn = useContext(AuthContext);
+  const isLoggedIn = React.useContext(AuthContext);
   const uid = localStorage.getItem('uid')!
   const [memoList, setMemoList] = React.useState<MemoListType>([])
+  const location = useLocation();
   React.useEffect(() => {
     getMemos().then()
   }, [])
@@ -28,6 +29,13 @@ function List() {
       navigate('/signin')
     }
   }, [])
+  const [outlet, setOutlet] = React.useState(false);
+  React.useEffect(() => {
+    const { pathname } = location;
+    const splitPathName = pathname.split("/");
+    if(splitPathName.length>2) setOutlet(true)
+    else setOutlet(false)
+  }, [location]);
 
   const navigate = useNavigate()
   const signOutButton = async () => {
@@ -50,6 +58,8 @@ function List() {
 
   }
 
+  if (outlet) return <Outlet />;
+
   return (
     <>
       {isLoggedIn ? (
@@ -57,13 +67,9 @@ function List() {
           <div className='listMemoArea'>
             {memoList.map((item,index)=>{
               return(
-                <div key={index} className='listMemoEachLine' >
-                  <Link to={`${item.id}`}>
-
-
+                <div key={index} className='listMemoEachLine' onClick={()=>navigate(`detail/${item.id}`)} >
                   {item.title}
                   {item.id}
-                  </Link>
                 </div>
               )
             })}
