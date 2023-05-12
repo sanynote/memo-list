@@ -12,9 +12,8 @@ import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
 
 
-
 function AuthPage() {
-  const  isLoggedIn  = useContext(AuthContext);
+  const isLoggedIn = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("　");
@@ -25,7 +24,7 @@ function AuthPage() {
     const provider = new GoogleAuthProvider();
     signInWithPopup(authFire, provider)
       .then((data) => {
-        localStorage.setItem('uid',data.user.uid)
+        localStorage.setItem('uid', data.user.uid)
         navigate('/list')
         console.log(data.user.email)
       })
@@ -38,7 +37,7 @@ function AuthPage() {
     try {
       const curUserInfo = await signInWithEmailAndPassword(authFire, email, password);
       console.log(curUserInfo.user.uid, 'uid');
-      localStorage.setItem('uid',curUserInfo.user.uid)
+      localStorage.setItem('uid', curUserInfo.user.uid)
       navigate('/list')
     } catch (err: any) {
       console.log(err.code, 'eeee');
@@ -77,35 +76,29 @@ function AuthPage() {
     localStorage.removeItem('uid')
     navigate('/signin')
   }
+  if (isLoggedIn) return <div className="backArea" onClick={() => navigate('/list')}>메모장으로 이동</div>;
 
   return (
 
     <div className="backArea">
-      {isLoggedIn ? <div onClick={() => signOutButton()}>로그아웃</div> :
-
-        (
-          <>
-            <div>
-              <button onClick={() => googleButton()}>구글 계정 로그인</button>
-            </div>
-            <div>
-              <h2>
-                email로 회원가입 or 로그인
-              </h2>
-              <div>
-                <label>e-mail</label><input type='email' value={email} onChange={e => setEmail(e.target.value)}/>
-              </div>
-              <div>
-                <label>password</label><input type='password' value={password} onChange={e => setPassword(e.target.value)}/>
-              </div>
-              <button type="submit" onClick={() => signInButton()}>로그인</button>
-              <button type="submit" onClick={() => signUpButton()}>회원가입하기</button>
-            </div>
-          </>
-        )
-      }
-
+      <div>
+        <button onClick={() => googleButton()}>구글 계정 로그인</button>
+      </div>
+      <div>
+        <h2>
+          email로 회원가입 or 로그인
+        </h2>
+        <div>
+          <label>e-mail</label><input type='email' value={email} onChange={e => setEmail(e.target.value)}/>
+        </div>
+        <div>
+          <label>password</label><input type='password' value={password} onChange={e => setPassword(e.target.value)}/>
+        </div>
+        <button type="submit" onClick={() => signInButton()}>로그인</button>
+        <button type="submit" onClick={() => signUpButton()}>회원가입하기</button>
+      </div>
     </div>
+
   );
 }
 

@@ -3,6 +3,7 @@ import {collection, addDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import './memo.create.css'
 import {useNavigate} from "react-router-dom";
+import BackButton from "../../common/back.button";
 
 function MemoCreate() {
   const uid = localStorage.getItem('uid')!
@@ -24,6 +25,7 @@ function MemoCreate() {
   }
   return (
     <div>
+      <BackButton/>
       <div>
         <div><label>글 제목</label><input value={memoTitle} onChange={(e) => setMemoTitle(e.target.value)}/></div>
         <div><label>글 내용</label><input value={memoContents} onChange={(e) => setMemoContents(e.target.value)}/></div>

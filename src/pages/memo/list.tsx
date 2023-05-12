@@ -6,7 +6,7 @@ import {AuthContext} from "../../auth.context.provider";
 import {collection, getDocs} from "firebase/firestore";
 import {db} from "../../firebase";
 import './list.css'
-import MemoCreate from "./memo.create";
+import BackButton from "../../common/back.button";
 
 type MemoListType = {
   title: string,
@@ -66,7 +66,7 @@ function List() {
 
   return (
     <>
-
+      <BackButton/>
       <div className='listMemoArea'>
         {memoList.map((item, index) => {
           return (
