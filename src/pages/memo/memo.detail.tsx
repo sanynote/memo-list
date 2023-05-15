@@ -35,8 +35,9 @@ function MemoDetail() {
       const docRef = doc(db, uid, documentId);
       const memoData = await getDoc(docRef);
       const memoDetail = memoData.data()
-      setMemoTitle(memoDetail!['title'])
-      setMemoContents(memoDetail!['contents'])
+      if (memoDetail === undefined) return;
+      setMemoTitle(memoDetail.title)
+      setMemoContents(memoDetail.contents)
       setIsLoading(false)
     } catch (e) {
       console.log(e, 'e')
@@ -45,12 +46,10 @@ function MemoDetail() {
 
   const updateMemo = async ()=>{
     try{
-      // setIsLoading(true)
       const updateMemo = doc(db, uid, documentId);
       await updateDoc(updateMemo,{title:memoTitle,contents:memoContents});
       updateMemoList(true)
       navigate(`/list`)
-      // setIsLoading(false)
       console.log('메모 수정 성공')
 
     }catch (e) {
@@ -69,14 +68,24 @@ function MemoDetail() {
       console.log(e, '메모 삭제 실패')
     }
   }
+
+  const onChangeContent = (event:any) => {
+    const textArea = event.target as HTMLTextAreaElement;
+    const inputText = textArea.value;
+    const textLineList = inputText.split("\n");
+    const forTitle = textLineList.filter(item => item.length !== 0)
+    setMemoTitle(forTitle[0]);
+    setMemoContents(inputText)
+  };
+
+
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <div>
       <BackButton/>
       <div>디테일페이지</div>
-      <input value={memoTitle} onChange={(e)=>setMemoTitle(e.target.value)}/>
-      <input value={memoContents} onChange={(e)=>setMemoContents(e.target.value)}/>
+      <textarea value={memoContents} onChange={onChangeContent} className='memoPad'/>
       <div onClick={() => updateMemo()}>메모 수정 버튼</div>
       <div onClick={() => removeMemo()}>메모 삭제 버튼</div>
     </div>

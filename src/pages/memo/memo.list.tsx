@@ -5,7 +5,7 @@ import {Link, useNavigate, Outlet, useLocation} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
 import {collection, getDocs} from "firebase/firestore";
 import {db} from "../../firebase";
-import './list.css'
+import './memo.css'
 import BackButton from "../../common/back.button";
 
 type MemoListType = {
@@ -14,7 +14,7 @@ type MemoListType = {
   id: string
 }[];
 
-function List() {
+function MemoList() {
   const isLoggedIn = React.useContext(AuthContext);
   const uid = localStorage.getItem('uid')!
   const [isLoading, setIsLoading] = React.useState(true);
@@ -89,4 +89,4 @@ function List() {
 
 }
 
-export default List;
+export default MemoList;

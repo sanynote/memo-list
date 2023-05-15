@@ -1,7 +1,7 @@
 import {Navigate,createBrowserRouter} from "react-router-dom";
 import NotFound from "../pages/not.found";
 import AuthPage from "../pages/auth/auth.page";
-import List from "../pages/memo/list";
+import MemoList from "../pages/memo/memo.list";
 import React from "react";
 import MemoDetail from "../pages/memo/memo.detail";
 import MemoCreate from "../pages/memo/memo.create";
@@ -23,7 +23,7 @@ const routes = [
   {
     path:'/list',
     name:'메모리스트',
-    element:<List/>,
+    element:<MemoList/>,
     children:[
       {
         path: "detail/:id",

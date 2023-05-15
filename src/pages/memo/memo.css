@@ -1,3 +1,5 @@
+/*memo.list*/
+
 .listMemoArea {
     background-color: antiquewhite;
 
@@ -17,4 +19,19 @@
     background-color: cadetblue;
 }
 
+/*memo.create*/
+
+.createArea {
+    background-color: antiquewhite;
+    width: 100vw;
+    height: 100vh;
+}
+
+/*common*/
+
+.memoPad {
+    width:100vw;
+    height:70vh;
+    background-color: cadetblue;
+}
 

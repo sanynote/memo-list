@@ -1,7 +1,7 @@
 import React from 'react';
 import {collection, addDoc} from "firebase/firestore";
 import {db} from "../../firebase";
-import './memo.create.css'
+import './memo.css'
 import {useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
 
@@ -25,12 +25,22 @@ function MemoCreate() {
       console.error("Error adding document: ", e);
     }
   }
+
+  const onChangeContent = (event:any) => {
+    const textArea = event.target as HTMLTextAreaElement;
+    const inputText = textArea.value;
+    const textLineList = inputText.split("\n");
+    const forTitle = textLineList.filter(item => item.length !== 0)
+    setMemoTitle(forTitle[0]);
+    setMemoContents(inputText)
+
+  };
+
   return (
     <div>
       <BackButton/>
       <div>
-        <div><label>글 제목</label><input value={memoTitle} onChange={(e) => setMemoTitle(e.target.value)}/></div>
-        <div><label>글 내용</label><input value={memoContents} onChange={(e) => setMemoContents(e.target.value)}/></div>
+        <textarea onChange={onChangeContent} className='memoPad'/>
       </div>
       <div onClick={() => createMemo()}>
         메모 등록하기
