@@ -2,10 +2,11 @@ import React from 'react';
 import {collection, addDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import './memo.create.css'
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
 
 function MemoCreate() {
+  const { updateMemoList } = useOutletContext<{ updateMemoList: Function }>();
   const uid = localStorage.getItem('uid')!
   const [memoTitle, setMemoTitle] = React.useState("")
   const [memoContents, setMemoContents] = React.useState("")
@@ -18,6 +19,7 @@ function MemoCreate() {
         contents: memoContents,
       });
       console.log("Document written with ID: ", docRef.id);
+      updateMemoList()
       navigate(`/list`)
     } catch (e) {
       console.error("Error adding document: ", e);

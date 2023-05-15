@@ -17,14 +17,12 @@ type MemoListType = {
 function List() {
   const isLoggedIn = React.useContext(AuthContext);
   const uid = localStorage.getItem('uid')!
+  const [isLoading, setIsLoading] = React.useState(true);
   const [memoList, setMemoList] = React.useState<MemoListType>([])
   const location = useLocation();
   React.useEffect(() => {
-    isLoggedIn && getMemos().then()
-    console.log('리렌더링되길')
-  }, [location])
-
-  // 여기에 location을 넣으면 리렌더링 되어서 글 작성 직후에도 리렌더링이 되는데 그럼 그냥 글만 읽을지라도 리렌더링이 계속 되어서 성능에 안 좋을듯함
+    isLoggedIn && getMemos(true).then()
+  }, [])
 
   React.useEffect(() => {
     if (!isLoggedIn) {
@@ -40,6 +38,9 @@ function List() {
     else setOutlet(false)
   }, [location]);
 
+  const updateMemoList = () => {
+    getMemos(false).then()
+  }
   const navigate = useNavigate()
   const signOutButton = async () => {
     await signOut(authFire)
@@ -47,7 +48,8 @@ function List() {
     navigate('/signin')
   }
 
-  const getMemos = async () => {
+  const getMemos = async (isLoading:boolean) => {
+    if (isLoading) setIsLoading(true);
     const memoData = await getDocs(collection(db, uid));
     const newMemoData = memoData.docs.map((doc) => {
       const data = doc.data()
@@ -58,11 +60,12 @@ function List() {
       }
     })
     setMemoList(newMemoData)
-
+    if (isLoading) setIsLoading(false);
   }
 
-  if (outlet) return <Outlet/>;
+  if (outlet) return <Outlet context={{ updateMemoList }}/>;
   if (!isLoggedIn) return <div>로그인이 필요한 페이지입니다.</div>
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <>
@@ -79,7 +82,6 @@ function List() {
       </div>
       <div className='listMemoCreate' onClick={() => navigate(`write/write`)}>글쓰기 버튼</div>
       <div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>
-
 
     </>
   )

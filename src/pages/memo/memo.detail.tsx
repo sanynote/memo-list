@@ -1,13 +1,15 @@
 import React from 'react';
 import {doc, getDoc, deleteDoc, updateDoc} from "firebase/firestore";
 import {db} from "../../firebase";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
 
 function MemoDetail() {
+  const { updateMemoList } = useOutletContext<{ updateMemoList: Function }>();
   const [documentId, setDocumentId] = React.useState('')
   const [memoTitle, setMemoTitle] = React.useState('')
   const [memoContents, setMemoContents] = React.useState('')
+  const [isLoading, setIsLoading] = React.useState(true);
   const navigate = useNavigate()
   const location = useLocation();
   const uid = localStorage.getItem('uid')!
@@ -29,12 +31,13 @@ function MemoDetail() {
 
   const getDetailMemo = async () => {
     try {
+      setIsLoading(true)
       const docRef = doc(db, uid, documentId);
       const memoData = await getDoc(docRef);
       const memoDetail = memoData.data()
       setMemoTitle(memoDetail!['title'])
       setMemoContents(memoDetail!['contents'])
-      console.log(memoDetail!['title'], '메모를가져오걸아 ')
+      setIsLoading(false)
     } catch (e) {
       console.log(e, 'e')
     }
@@ -42,9 +45,12 @@ function MemoDetail() {
 
   const updateMemo = async ()=>{
     try{
+      // setIsLoading(true)
       const updateMemo = doc(db, uid, documentId);
       await updateDoc(updateMemo,{title:memoTitle,contents:memoContents});
+      updateMemoList(true)
       navigate(`/list`)
+      // setIsLoading(false)
       console.log('메모 수정 성공')
 
     }catch (e) {
@@ -56,12 +62,14 @@ function MemoDetail() {
     try {
       const detailDoc = doc(db, uid, documentId);
       await deleteDoc(detailDoc);
+      updateMemoList()
       navigate(`/list`)
       console.log('메모 삭제 성공')
     } catch (e) {
       console.log(e, '메모 삭제 실패')
     }
   }
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <div>
