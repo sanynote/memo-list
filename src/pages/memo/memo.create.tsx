@@ -6,7 +6,7 @@ import {useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
 
 function MemoCreate() {
-  const { updateMemoList } = useOutletContext<{ updateMemoList: Function }>();
+  const {updateMemoList} = useOutletContext<{ updateMemoList: Function }>();
   const uid = localStorage.getItem('uid')!
   const [memoTitle, setMemoTitle] = React.useState("")
   const [memoContents, setMemoContents] = React.useState("")
@@ -26,10 +26,11 @@ function MemoCreate() {
     }
   }
 
-  const onChangeContent = (event:any) => {
-    const textArea = event.target as HTMLTextAreaElement;
-    const inputText = textArea.value;
-    const textLineList = inputText.split("\n");
+  const onChangeContent = (event: any) => {
+    const inputDiv = event.target as HTMLDivElement;
+    const inputText = inputDiv.innerHTML;
+    const inputTitleText = inputDiv.innerText;
+    const textLineList = inputTitleText.split("\n");
     const forTitle = textLineList.filter(item => item.length !== 0)
     setMemoTitle(forTitle[0]);
     setMemoContents(inputText)
@@ -39,9 +40,11 @@ function MemoCreate() {
   return (
     <div>
       <BackButton/>
-      <div>
-        <textarea onChange={onChangeContent} className='memoPad'/>
+      <input type="file"
+             accept="image/png, image/jpeg" multiple/>
+      <div contentEditable className='memoPad' onInput={onChangeContent}>
       </div>
+
       <div onClick={() => createMemo()}>
         메모 등록하기
       </div>

@@ -7,6 +7,7 @@ import {collection, getDocs} from "firebase/firestore";
 import {db} from "../../firebase";
 import './memo.css'
 import BackButton from "../../common/back.button";
+import CreateButton from "../../common/create.button";
 
 type MemoListType = {
   title: string,
@@ -41,6 +42,8 @@ function MemoList() {
   const updateMemoList = () => {
     getMemos(false).then()
   }
+
+
   const navigate = useNavigate()
   const signOutButton = async () => {
     await signOut(authFire)
@@ -75,13 +78,12 @@ function MemoList() {
           return (
             <div key={index} className='listMemoEachLine' onClick={() => navigate(`detail/${item.id}`)}>
               {item.title}
-              {item.id}
             </div>
           )
         })}
       </div>
-      <div className='listMemoCreate' onClick={() => navigate(`write/write`)}>글쓰기 버튼</div>
       <div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>
+      <CreateButton />
 
     </>
   )

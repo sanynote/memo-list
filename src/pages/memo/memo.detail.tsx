@@ -9,6 +9,7 @@ function MemoDetail() {
   const [documentId, setDocumentId] = React.useState('')
   const [memoTitle, setMemoTitle] = React.useState('')
   const [memoContents, setMemoContents] = React.useState('')
+  const [memoTotal,setMemoTotal] = React.useState('')
   const [isLoading, setIsLoading] = React.useState(true);
   const navigate = useNavigate()
   const location = useLocation();
@@ -38,17 +39,18 @@ function MemoDetail() {
       if (memoDetail === undefined) return;
       setMemoTitle(memoDetail.title)
       setMemoContents(memoDetail.contents)
+      setMemoTotal( memoDetail.contents)
       setIsLoading(false)
     } catch (e) {
       console.log(e, 'e')
     }
   }
 
-  const updateMemo = async ()=>{
+  const updateMemo = async ()=> {
     try{
       const updateMemo = doc(db, uid, documentId);
       await updateDoc(updateMemo,{title:memoTitle,contents:memoContents});
-      updateMemoList(true)
+      updateMemoList()
       navigate(`/list`)
       console.log('메모 수정 성공')
 
@@ -70,9 +72,10 @@ function MemoDetail() {
   }
 
   const onChangeContent = (event:any) => {
-    const textArea = event.target as HTMLTextAreaElement;
-    const inputText = textArea.value;
-    const textLineList = inputText.split("\n");
+    const inputDiv = event.target as HTMLDivElement;
+    const inputText = inputDiv.innerHTML;
+    const inputTitleText = inputDiv.innerText;
+    const textLineList = inputTitleText.split("\n");
     const forTitle = textLineList.filter(item => item.length !== 0)
     setMemoTitle(forTitle[0]);
     setMemoContents(inputText)
@@ -85,7 +88,7 @@ function MemoDetail() {
     <div>
       <BackButton/>
       <div>디테일페이지</div>
-      <textarea value={memoContents} onChange={onChangeContent} className='memoPad'/>
+      <div id="abc" contentEditable className='memoPad' dangerouslySetInnerHTML={{ __html: memoTotal }} onInput={onChangeContent} ></div>
       <div onClick={() => updateMemo()}>메모 수정 버튼</div>
       <div onClick={() => removeMemo()}>메모 삭제 버튼</div>
     </div>
