@@ -16,7 +16,7 @@ function BackButton() {
 
 
   }, [location]);
-console.log(lastName,'lastName')
+// console.log(lastName,'lastName')
   const [isWriting, setIsWriting] = React.useState(false)
   const navigate = useNavigate()
   const backButton = () => {
