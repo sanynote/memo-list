@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import {collection, addDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import './memo.css'
@@ -11,6 +11,7 @@ function MemoCreate() {
   const [memoTitle, setMemoTitle] = React.useState("")
   const [memoContents, setMemoContents] = React.useState("")
   const navigate = useNavigate()
+  const [file, setFile] = React.useState<FileList>()
 
   const createMemo = async () => {
     try {
@@ -37,11 +38,21 @@ function MemoCreate() {
 
   };
 
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files)
+    }
+  }
+
+  console.log(file,'file')
+
   return (
     <div>
       <BackButton/>
-      <input type="file"
-             accept="image/png, image/jpeg" multiple/>
+      <input type="file" id='imageInput'
+             accept="image/png, image/jpeg" multiple
+             onChange={handleImageChange}
+      />
       <div contentEditable className='memoPad' onInput={onChangeContent}>
       </div>
 

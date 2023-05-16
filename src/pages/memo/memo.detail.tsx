@@ -88,7 +88,7 @@ function MemoDetail() {
     <div>
       <BackButton/>
       <div>디테일페이지</div>
-      <div id="abc" contentEditable className='memoPad' dangerouslySetInnerHTML={{ __html: memoTotal }} onInput={onChangeContent} ></div>
+      <div id="abc" contentEditable className='memoPad' dangerouslySetInnerHTML={{ __html: memoTotal }} onInput={onChangeContent} />
       <div onClick={() => updateMemo()}>메모 수정 버튼</div>
       <div onClick={() => removeMemo()}>메모 삭제 버튼</div>
     </div>
