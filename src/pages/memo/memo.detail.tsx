@@ -50,7 +50,7 @@ function MemoDetail() {
     try{
       const updateMemo = doc(db, uid, documentId);
       await updateDoc(updateMemo,{title:memoTitle,contents:memoContents});
-      updateMemoList()
+      await updateMemoList()
       navigate(`/list`)
       console.log('메모 수정 성공')
 

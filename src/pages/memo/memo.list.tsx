@@ -40,7 +40,7 @@ function MemoList() {
   }, [location]);
 
   const updateMemoList = () => {
-    getMemos(false).then()
+    return getMemos(false)
   }
 
 
