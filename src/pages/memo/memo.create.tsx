@@ -3,6 +3,7 @@ import {collection, addDoc} from "firebase/firestore";
 import {db, storage} from "../../firebase";
 import {ref, getDownloadURL, uploadBytes} from "firebase/storage"
 import './memo.css'
+import '../../common/common.css'
 import {useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
 
@@ -13,7 +14,24 @@ function MemoCreate() {
   const [memoContents, setMemoContents] = React.useState("")
   const navigate = useNavigate()
   const [imagesUpload, setImagesUpload] = React.useState<File[]>([])
-  const [image, setImage] = React.useState("");
+  const [imageUrl, setImageUrl] = React.useState("");
+
+  React.useEffect(() => {
+
+    imagesUpload.forEach((imageUpload, index) => {
+      if (!imageUpload) return;
+      const imageRef = ref(storage, `image/${memoTitle}/${index}`);
+      uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          setImageUrl(url);
+          console.log(imageUrl, 'imageUrl')
+        });
+
+      });
+
+    })
+
+  }, [imagesUpload])
 
 
   const createMemo = async () => {
@@ -21,11 +39,10 @@ function MemoCreate() {
       const docRef = await addDoc(collection(db, uid), {
         title: memoTitle,
         contents: memoContents,
+        // images: imageUrl
       });
       console.log("Document written with ID: ", docRef.id);
 
-
-      imgToFirebase(docRef.id)
       updateMemoList()
       navigate(`/list`)
     } catch (e) {
@@ -49,22 +66,9 @@ function MemoCreate() {
   }
 
 
-  const imgToFirebase = (docId:string) => {
-    imagesUpload.forEach((imageUpload,index)=>{
-
-    const imageRef = ref(storage, `image/${memoTitle}${docId}/${index}`);
-    if (!imageUpload) return;
-    uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setImage(url);
-        console.log(image,'image')
-      });
-    });
-    })
-  }
-
   return (
-    <div>
+    <div className='commonLayout'>
+      <div className='commonLayoutPadding'>
       <BackButton/>
       <input type="file" id='imageInput'
              accept="image/png, image/jpeg" multiple
@@ -75,6 +79,7 @@ function MemoCreate() {
 
       <div onClick={() => createMemo()}>
         메모 등록하기
+      </div>
       </div>
     </div>
 

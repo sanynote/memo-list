@@ -33,14 +33,14 @@ function BackButton() {
   }
 
   return (
-    <div>
-      <BackArrow onClick={() => backButton()} style={{backgroundColor: 'red'}}/>
-      {isWriting ? (
-        <>
-          <Dot/>
-          <span onClick={()=> fix()}>완료</span>
-        </>
-      ) : null}
+    <div style={{ height:'50px', display:"flex",justifyContent:"space-between", alignItems:"center",backgroundColor:'orange'}}>
+      <BackArrow onClick={() => backButton()}/>
+      {isWriting &&
+        ( <div style={{height:'30px' ,display:'flex'}}>
+          <Dot style={{ alignItems:"center"}}/>
+          <div style={{alignItems:"center" , lineHeight:'30px', paddingLeft:'8px',paddingRight:'8px'}} onClick={()=> fix()}>완료</div>
+        </div>)}
+
     </div>
   );
 }

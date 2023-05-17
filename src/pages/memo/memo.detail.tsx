@@ -85,12 +85,14 @@ function MemoDetail() {
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
-    <div>
+    <div className='commonLayout'>
+      <div className='commonLayoutPadding'>
       <BackButton/>
       <div>디테일페이지</div>
       <div id="abc" contentEditable className='memoPad' dangerouslySetInnerHTML={{ __html: memoTotal }} onInput={onChangeContent} />
       <div onClick={() => updateMemo()}>메모 수정 버튼</div>
       <div onClick={() => removeMemo()}>메모 삭제 버튼</div>
+      </div>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import {collection, getDocs} from "firebase/firestore";
 import {db} from "../../firebase";
 import './memo.css'
 import BackButton from "../../common/back.button";
-import CreateButton from "../../common/create.button";
+import {ReactComponent as WriteButton} from "../../assets/write_button.svg";
 
 type MemoListType = {
   title: string,
@@ -51,7 +51,7 @@ function MemoList() {
     navigate('/signin')
   }
 
-  const getMemos = async (isLoading:boolean) => {
+  const getMemos = async (isLoading: boolean) => {
     if (isLoading) setIsLoading(true);
     const memoData = await getDocs(collection(db, uid));
     const newMemoData = memoData.docs.map((doc) => {
@@ -66,26 +66,29 @@ function MemoList() {
     if (isLoading) setIsLoading(false);
   }
 
-  if (outlet) return <Outlet context={{ updateMemoList }}/>;
+  if (outlet) return <Outlet context={{updateMemoList}}/>;
   if (!isLoggedIn) return <div>로그인이 필요한 페이지입니다.</div>
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
-    <>
-      <BackButton/>
-      <div className='listMemoArea'>
-        {memoList.map((item, index) => {
-          return (
-            <div key={index} className='listMemoEachLine' onClick={() => navigate(`detail/${item.id}`)}>
-              {item.title}
-            </div>
-          )
-        })}
-      </div>
-      <div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>
-      <CreateButton />
+    <div className='commonLayout'>
+      <div className='commonLayoutPadding'>
+        <BackButton/>
+        <div className='listMemoArea'>
+          {memoList.map((item, index) => {
+            return (
+              <div key={index} className='listMemoEachLine' onClick={() => navigate(`detail/${item.id}`)}>
+                {item.title}
+              </div>
+            )
+          })}
+        </div>
+        {/*<div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>*/}
+          <div className='listMemoCreate'><WriteButton style={{backgroundColor: 'blue'}}
+                                                       onClick={() => navigate(`write/write`)}/></div>
 
-    </>
+      </div>
+    </div>
   )
 
 

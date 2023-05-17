@@ -1,7 +1,9 @@
 /*memo.list*/
 
 .listMemoArea {
+    height: 82vh;
     background-color: antiquewhite;
+    position: relative;
 
 }
 
@@ -12,6 +14,10 @@
 .listMemoCreate {
     margin-top: 4px;
     background-color: orchid;
+    width: 100vw;
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
 
 .listMemoSignout {
@@ -30,8 +36,8 @@
 /*common*/
 
 .memoPad {
-    width:100vw;
-    height:70vh;
+    padding: 8px;
+    height: 70vh;
     background-color: cadetblue;
 }
 
