@@ -12,21 +12,8 @@ function MemoCreate() {
   const [memoTitle, setMemoTitle] = React.useState("")
   const [memoContents, setMemoContents] = React.useState("")
   const navigate = useNavigate()
-  const [file, setFile] = React.useState<File[]>([])
-  // const [image, setImage] = React.useState("");
-  // const [imageUpload, setImageUpload] = React.useState<File>()
-
-  // React.useEffect(() => {
-  //   const imageRef = ref(storage, `image/${imageUpload?.name}`);
-  //   if (!imageUpload) return;
-  //   uploadBytes(imageRef, imageUpload).then((snapshot) => {
-  //     getDownloadURL(snapshot.ref).then((url) => {
-  //       setImage(url);
-  //       console.log(url,'url');
-  //       console.log(image,'image')
-  //     });
-  //   });
-  // }, [imageUpload]);
+  const [imagesUpload, setImagesUpload] = React.useState<File[]>([])
+  const [image, setImage] = React.useState("");
 
 
   const createMemo = async () => {
@@ -36,6 +23,9 @@ function MemoCreate() {
         contents: memoContents,
       });
       console.log("Document written with ID: ", docRef.id);
+
+
+      imgToFirebase(docRef.id)
       updateMemoList()
       navigate(`/list`)
     } catch (e) {
@@ -55,10 +45,23 @@ function MemoCreate() {
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.target.files && setFile([...file, ...Array.from(e.target.files)])
+    e.target.files && setImagesUpload([...imagesUpload, ...Array.from(e.target.files)])
   }
 
-  console.log(file, 'file')
+
+  const imgToFirebase = (docId:string) => {
+    imagesUpload.forEach((imageUpload,index)=>{
+
+    const imageRef = ref(storage, `image/${memoTitle}${docId}/${index}`);
+    if (!imageUpload) return;
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        setImage(url);
+        console.log(image,'image')
+      });
+    });
+    })
+  }
 
   return (
     <div>
