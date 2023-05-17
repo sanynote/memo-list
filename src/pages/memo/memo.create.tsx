@@ -14,7 +14,8 @@ function MemoCreate() {
   const [memoContents, setMemoContents] = React.useState("")
   const navigate = useNavigate()
   const [imagesUpload, setImagesUpload] = React.useState<File[]>([])
-  const [imageUrl, setImageUrl] = React.useState("");
+
+  let imageUrlArray:string[] = []
 
   React.useEffect(() => {
 
@@ -23,12 +24,10 @@ function MemoCreate() {
       const imageRef = ref(storage, `image/${memoTitle}/${index}`);
       uploadBytes(imageRef, imageUpload).then((snapshot) => {
         getDownloadURL(snapshot.ref).then((url) => {
-          setImageUrl(url);
-          console.log(imageUrl, 'imageUrl')
+          imageUrlArray.push(url)
+          console.log(imageUrlArray, 'imageArray')
         });
-
       });
-
     })
 
   }, [imagesUpload])
@@ -39,7 +38,7 @@ function MemoCreate() {
       const docRef = await addDoc(collection(db, uid), {
         title: memoTitle,
         contents: memoContents,
-        // images: imageUrl
+        images: imageUrlArray
       });
       console.log("Document written with ID: ", docRef.id);
 
