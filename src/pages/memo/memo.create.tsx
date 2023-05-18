@@ -14,8 +14,14 @@ function MemoCreate() {
   const [memoContents, setMemoContents] = React.useState("")
   const navigate = useNavigate()
   const [imagesUpload, setImagesUpload] = React.useState<File[]>([])
+  const [accessible, setAccessible] = React.useState(false)
+  const [location, setLocation] = React.useState<number>(0)
 
-  let imageUrlArray:string[] = []
+  const selection: Selection | null = window.getSelection();
+  const selectionToNumber = Number(selection)
+  const seletedDiv = document.getElementById('tears')
+
+  let imageUrlArray: string[] = []
 
   React.useEffect(() => {
 
@@ -24,14 +30,26 @@ function MemoCreate() {
       const imageRef = ref(storage, `image/${memoTitle}/${index}`);
       uploadBytes(imageRef, imageUpload).then((snapshot) => {
         getDownloadURL(snapshot.ref).then((url) => {
-          imageUrlArray.push(url)
+
+          imageUrlArray.push(`<img src=${url}/>`)
+
+          // const imgTest = imageUrlArray.map((item)=>item as HTMLImageElement)
+
+
+          // const inputDiv = event.target as HTMLDivElement;
+          // const inputText = inputDiv.innerHTML;
+
           console.log(imageUrlArray, 'imageArray')
         });
       });
     })
+    seletedDiv && location && (
+      seletedDiv.innerHTML = seletedDiv.innerHTML.slice(0, location) + imageUrlArray + seletedDiv.innerHTML.slice(location, 10))
+    setAccessible(false)
 
   }, [imagesUpload])
 
+  console.log(selectionToNumber, 'selectionToNumber')
 
   const createMemo = async () => {
     try {
@@ -62,23 +80,27 @@ function MemoCreate() {
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.target.files && setImagesUpload([...imagesUpload, ...Array.from(e.target.files)])
+
   }
 
 
   return (
     <div className='commonLayout'>
       <div className='commonLayoutPadding'>
-      <BackButton/>
-      <input type="file" id='imageInput'
-             accept="image/png, image/jpeg" multiple
-             onChange={handleImageChange}
-      />
-      <div contentEditable className='memoPad' onInput={onChangeContent}>
-      </div>
-
-      <div onClick={() => createMemo()}>
-        메모 등록하기
-      </div>
+        <BackButton/>
+        <input type="file" id='imageInput'
+               accept="image/png, image/jpeg" multiple
+               onChange={handleImageChange}
+               disabled={!accessible}
+        />
+        <div contentEditable className='memoPad' onInput={onChangeContent}
+             onFocus={() => setAccessible(true)} onBlur={() => setLocation(selectionToNumber)}
+             id='tears'
+        >
+        </div>
+        <div onClick={() => createMemo()}>
+          메모 등록하기
+        </div>
       </div>
     </div>
 
