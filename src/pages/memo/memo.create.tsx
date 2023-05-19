@@ -6,6 +6,7 @@ import './memo.css'
 import '../../common/common.css'
 import {useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
+import imageCompression from "browser-image-compression";
 
 function MemoCreate() {
   const {updateMemoList} = useOutletContext<{ updateMemoList: Function }>();
@@ -33,15 +34,23 @@ function MemoCreate() {
     const uploadAndAppendImage = async () => {
       if (!memoDiv) return;
 
+      const options = {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 100
+      }
+
       const imageTagArray: HTMLImageElement[] = await Promise.all(
         imagesUpload
           .filter((imageFile) => imageFile)
           .map(async (imageFile, index) => {
+
+            const compressedFile = await imageCompression(imageFile, options);
+
             const imageRef = ref(
               storage,
               `image/${window.crypto.randomUUID()}/${index}`
             );
-            const snapshot = await uploadBytes(imageRef, imageFile);
+            const snapshot = await uploadBytes(imageRef, compressedFile);
             const url = await getDownloadURL(snapshot.ref);
             const imgTag = document.createElement("img");
             imgTag.setAttribute("src", url);
