@@ -30,7 +30,7 @@ function MemoCreate() {
         focusNode.parentElement !== memoDiv &&
         focusNode.parentElement?.parentElement !== memoDiv);
 
-    async function uploadAndAppendImage() {
+    const uploadAndAppendImage = async () => {
       if (!memoDiv) return;
 
       const imageTagArray: HTMLImageElement[] = await Promise.all(
