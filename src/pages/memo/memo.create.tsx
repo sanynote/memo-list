@@ -20,7 +20,7 @@ function MemoCreate() {
 
     if (imagesUpload.length === 0) return;
 
-    const memoDiv = document.getElementById("tears");
+    const memoDiv = document.getElementById("createDiv");
     if (!memoDiv) return;
 
     const selection = window.getSelection();
@@ -36,7 +36,7 @@ function MemoCreate() {
 
       const options = {
         maxSizeMB: 2,
-        maxWidthOrHeight: 100
+        maxWidthOrHeight: 500
       }
 
       const imageTagArray: HTMLImageElement[] = await Promise.all(
@@ -120,7 +120,7 @@ function MemoCreate() {
                onChange={handleImageChange}
         />
         <div contentEditable className='memoPad' onInput={onChangeContent}
-             id='tears'
+             id='createDiv'
         >
         </div>
         <div onClick={() => createMemo()}>

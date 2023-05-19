@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import {doc, getDoc, deleteDoc, updateDoc} from "firebase/firestore";
-import {db} from "../../firebase";
+import {db, storage} from "../../firebase";
 import {useLocation, useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
+import imageCompression from "browser-image-compression";
+import {getDownloadURL, ref, uploadBytes} from "firebase/storage";
 
 function MemoDetail() {
   const { updateMemoList } = useOutletContext<{ updateMemoList: Function }>();
@@ -14,6 +16,7 @@ function MemoDetail() {
   const navigate = useNavigate()
   const location = useLocation();
   const uid = localStorage.getItem('uid')!
+  const [imagesUpload, setImagesUpload] = React.useState<File[]>([])
 
   React.useEffect(()=>{
     getDocumentId()
@@ -45,6 +48,68 @@ function MemoDetail() {
       console.log(e, 'e')
     }
   }
+
+  React.useEffect(() => {
+
+    if (imagesUpload.length === 0) return;
+
+    const memoDiv = document.getElementById("modifyDiv");
+    if (!memoDiv) return;
+
+    const selection = window.getSelection();
+    const focusNode = selection?.focusNode;
+    const isAppendLast =
+      !focusNode ||
+      (focusNode !== memoDiv &&
+        focusNode.parentElement !== memoDiv &&
+        focusNode.parentElement?.parentElement !== memoDiv);
+
+    const uploadAndAppendImage = async () => {
+      if (!memoDiv) return;
+
+      const options = {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 500
+      }
+
+      const imageTagArray: HTMLImageElement[] = await Promise.all(
+        imagesUpload
+          .filter((imageFile) => imageFile)
+          .map(async (imageFile, index) => {
+
+            const compressedFile = await imageCompression(imageFile, options);
+
+            const imageRef = ref(
+              storage,
+              `image/${window.crypto.randomUUID()}/${index}`
+            );
+            const snapshot = await uploadBytes(imageRef, compressedFile);
+            const url = await getDownloadURL(snapshot.ref);
+            const imgTag = document.createElement("img");
+            imgTag.setAttribute("src", url);
+            imgTag.setAttribute("width", '250');
+            imgTag.setAttribute("height", '250');
+            return imgTag;
+          })
+      );
+
+      if (isAppendLast) {
+        imageTagArray.forEach((imageTag) => memoDiv.appendChild(imageTag));
+      } else {
+        imageTagArray
+          .reverse()
+          .forEach((imageTag) => (focusNode as HTMLElement).after(imageTag));
+      }
+
+      const imageInputElement = document.getElementById("imageInput");
+      if (imageInputElement instanceof HTMLInputElement) {
+        imageInputElement.value = "";
+      }
+
+      setImagesUpload([]);
+    }
+    uploadAndAppendImage();
+  }, [imagesUpload])
 
   const updateMemo = async ()=> {
     try{
@@ -80,6 +145,11 @@ function MemoDetail() {
     setMemoTitle(forTitle[0]);
     setMemoContents(inputText)
   };
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.target.files && setImagesUpload([...Array.from(e.target.files)])
+
+  }
+
 
 
   if (isLoading) return <h1>Loading...</h1>;
@@ -89,7 +159,11 @@ function MemoDetail() {
       <div className='commonLayoutPadding'>
       <BackButton/>
       <div>디테일페이지</div>
-      <div id="abc" contentEditable className='memoPad' dangerouslySetInnerHTML={{ __html: memoTotal }} onInput={onChangeContent} />
+        <input type="file" id='imageInput'
+               accept="image/png, image/jpeg" multiple
+               onChange={handleImageChange}
+        />
+      <div id="modifyDiv" contentEditable className='memoPad' dangerouslySetInnerHTML={{ __html: memoTotal }} onInput={onChangeContent} />
       <div onClick={() => updateMemo()}>메모 수정 버튼</div>
       <div onClick={() => removeMemo()}>메모 삭제 버튼</div>
       </div>
