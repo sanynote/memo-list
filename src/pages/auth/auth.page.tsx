@@ -39,8 +39,8 @@ function AuthPage() {
       console.log(curUserInfo.user.uid, 'uid');
       localStorage.setItem('uid', curUserInfo.user.uid)
       navigate('/list')
-    } catch (err: any) {
-      console.log(err.code, 'eeee');
+    } catch (e) {
+      console.log(e, 'eeee');
       /*
       입력한 아이디가 없을 경우 : auth/user-not-found.
       비밀번호가 잘못된 경우 : auth/wrong-password.
@@ -56,9 +56,9 @@ function AuthPage() {
       setEmail("");
       setPassword("");
 
-    } catch (err: any) {
-      console.log(err.code, errorMsg);
-      switch (err.code) {
+    } catch (e) {
+      console.log(e, errorMsg);
+      switch (e) {
         case 'auth/weak-password':
           setErrorMsg('비밀번호는 6자리 이상이어야 합니다');
           break;
@@ -76,7 +76,12 @@ function AuthPage() {
     localStorage.removeItem('uid')
     navigate('/signin')
   }
-  if (isLoggedIn) return <div className="backArea" onClick={() => navigate('/list')}>메모장으로 이동</div>;
+  if (isLoggedIn) return (
+    <div className='backArea'>
+    <div onClick={() => navigate('/list')}>메모장으로 이동</div>
+    <div onClick={()=>signOutButton()}>로그아웃하기</div>
+    </div>
+  );
 
   return (
 

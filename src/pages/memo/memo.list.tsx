@@ -1,6 +1,4 @@
 import React from 'react';
-import {authFire} from "../../firebase";
-import {signOut} from "firebase/auth";
 import {Link, useNavigate, Outlet, useLocation} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
 import {collection, getDocs} from "firebase/firestore";
@@ -45,11 +43,6 @@ function MemoList() {
 
 
   const navigate = useNavigate()
-  const signOutButton = async () => {
-    await signOut(authFire)
-    localStorage.removeItem('uid')
-    navigate('/signin')
-  }
 
   const getMemos = async (isLoading: boolean) => {
     if (isLoading) setIsLoading(true);
@@ -83,7 +76,6 @@ function MemoList() {
             )
           })}
         </div>
-        {/*<div className='listMemoSignout' onClick={() => signOutButton()}>로그아웃</div>*/}
           <div className='listMemoCreate'><WriteButton style={{backgroundColor: 'blue'}}
                                                        onClick={() => navigate(`write/write`)}/></div>
 

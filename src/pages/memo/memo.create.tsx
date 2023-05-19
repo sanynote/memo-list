@@ -75,7 +75,7 @@ function MemoCreate() {
 
       setImagesUpload([]);
     }
-    uploadAndAppendImage();
+    uploadAndAppendImage().then();
   }, [imagesUpload])
 
 
@@ -94,7 +94,7 @@ function MemoCreate() {
     }
   }
 
-  const onChangeContent = (event: any) => {
+  const onChangeContent = (event: ChangeEvent<HTMLInputElement>) => {
     const inputDiv = event.target as HTMLDivElement;
     const inputText = inputDiv.innerHTML;
     const inputTitleText = inputDiv.innerText;

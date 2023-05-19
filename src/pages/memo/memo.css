@@ -39,5 +39,6 @@
     padding: 8px;
     height: 70vh;
     background-color: cadetblue;
+    overflow: scroll;
 }
 
