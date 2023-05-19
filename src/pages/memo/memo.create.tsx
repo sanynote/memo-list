@@ -14,49 +14,67 @@ function MemoCreate() {
   const [memoContents, setMemoContents] = React.useState("")
   const navigate = useNavigate()
   const [imagesUpload, setImagesUpload] = React.useState<File[]>([])
-  const [accessible, setAccessible] = React.useState(false)
-  const [location, setLocation] = React.useState<number>(0)
-
-  const selection: Selection | null = window.getSelection();
-  const selectionToNumber = Number(selection)
-  const seletedDiv = document.getElementById('tears')
-
-  let imageUrlArray: string[] = []
 
   React.useEffect(() => {
 
-    imagesUpload.forEach((imageUpload, index) => {
-      if (!imageUpload) return;
-      const imageRef = ref(storage, `image/${memoTitle}/${index}`);
-      uploadBytes(imageRef, imageUpload).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
+    if (imagesUpload.length === 0) return;
 
-          imageUrlArray.push(`<img src=${url}/>`)
+    const memoDiv = document.getElementById("tears");
+    if (!memoDiv) return;
 
-          // const imgTest = imageUrlArray.map((item)=>item as HTMLImageElement)
+    const selection = window.getSelection();
+    const focusNode = selection?.focusNode;
+    const isAppendLast =
+      !focusNode ||
+      (focusNode !== memoDiv &&
+        focusNode.parentElement !== memoDiv &&
+        focusNode.parentElement?.parentElement !== memoDiv);
 
+    async function uploadAndAppendImage() {
+      if (!memoDiv) return;
 
-          // const inputDiv = event.target as HTMLDivElement;
-          // const inputText = inputDiv.innerHTML;
+      const imageTagArray: HTMLImageElement[] = await Promise.all(
+        imagesUpload
+          .filter((imageFile) => imageFile)
+          .map(async (imageFile, index) => {
+            const imageRef = ref(
+              storage,
+              `image/${window.crypto.randomUUID()}/${index}`
+            );
+            const snapshot = await uploadBytes(imageRef, imageFile);
+            const url = await getDownloadURL(snapshot.ref);
+            const imgTag = document.createElement("img");
+            imgTag.setAttribute("src", url);
+            imgTag.setAttribute("width", '250');
+            imgTag.setAttribute("height", '250');
+            return imgTag;
+          })
+      );
 
-          console.log(imageUrlArray, 'imageArray')
-        });
-      });
-    })
-    seletedDiv && location && (
-      seletedDiv.innerHTML = seletedDiv.innerHTML.slice(0, location) + imageUrlArray + seletedDiv.innerHTML.slice(location, 10))
-    setAccessible(false)
+      if (isAppendLast) {
+        imageTagArray.forEach((imageTag) => memoDiv.appendChild(imageTag));
+      } else {
+        imageTagArray
+          .reverse()
+          .forEach((imageTag) => (focusNode as HTMLElement).after(imageTag));
+      }
 
+      const imageInputElement = document.getElementById("imageInput");
+      if (imageInputElement instanceof HTMLInputElement) {
+        imageInputElement.value = "";
+      }
+
+      setImagesUpload([]);
+    }
+    uploadAndAppendImage();
   }, [imagesUpload])
 
-  console.log(selectionToNumber, 'selectionToNumber')
 
   const createMemo = async () => {
     try {
       const docRef = await addDoc(collection(db, uid), {
         title: memoTitle,
         contents: memoContents,
-        images: imageUrlArray
       });
       console.log("Document written with ID: ", docRef.id);
 
@@ -79,7 +97,7 @@ function MemoCreate() {
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.target.files && setImagesUpload([...imagesUpload, ...Array.from(e.target.files)])
+    e.target.files && setImagesUpload([...Array.from(e.target.files)])
 
   }
 
@@ -91,10 +109,8 @@ function MemoCreate() {
         <input type="file" id='imageInput'
                accept="image/png, image/jpeg" multiple
                onChange={handleImageChange}
-               disabled={!accessible}
         />
         <div contentEditable className='memoPad' onInput={onChangeContent}
-             onFocus={() => setAccessible(true)} onBlur={() => setLocation(selectionToNumber)}
              id='tears'
         >
         </div>
