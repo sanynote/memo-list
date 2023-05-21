@@ -1,5 +1,5 @@
 import React, {ChangeEvent} from 'react';
-import {doc, getDoc, deleteDoc, updateDoc} from "firebase/firestore";
+import {doc, getDoc, deleteDoc, updateDoc,DocumentReference} from "firebase/firestore";
 import {db, storage} from "../../firebase";
 import {useLocation, useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
@@ -34,19 +34,23 @@ function MemoDetail() {
   }
 
   const getDetailMemo = async () => {
+    if(!documentId) return ;
+
     setIsLoading(true)
+
     try {
-      const docRef = doc(db, uid, documentId);
+      const docRef = doc(db, uid,documentId);
       const memoData = await getDoc(docRef);
       const memoDetail = memoData.data()
       if (memoDetail === undefined) return;
       setMemoTitle(memoDetail.title)
       setMemoContents(memoDetail.contents)
       setMemoTotal(memoDetail.contents)
-      setIsLoading(false)
-      console.log(db, uid, documentId,'docRef')
     } catch (e) {
       console.log(e, '캐치에러 잡히는중')
+    } finally {
+      setIsLoading(false)
+
     }
   }
 
