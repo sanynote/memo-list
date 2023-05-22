@@ -1,5 +1,5 @@
 import React, {ChangeEvent} from 'react';
-import {doc, getDoc, deleteDoc, updateDoc, query, where, collection} from "firebase/firestore";
+import {doc, getDoc, deleteDoc, updateDoc} from "firebase/firestore";
 import {db, storage} from "../../firebase";
 import {useLocation, useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
@@ -123,7 +123,7 @@ function MemoDetail() {
       if (imageInputElement instanceof HTMLInputElement) {
         imageInputElement.value = "";
       }
-
+      setMemoContents(memoDiv.innerHTML);
       setImagesUpload([]);
     }
     uploadAndAppendImage();

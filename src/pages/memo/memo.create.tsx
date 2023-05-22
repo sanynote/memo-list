@@ -27,7 +27,7 @@ function MemoCreate() {
     const focusNode = selection?.focusNode;
     const isAppendLast =
       !focusNode ||
-      (focusNode !== memoDiv &&
+      (
         focusNode.parentElement !== memoDiv &&
         focusNode.parentElement?.parentElement !== memoDiv);
 
@@ -72,6 +72,8 @@ function MemoCreate() {
       if (imageInputElement instanceof HTMLInputElement) {
         imageInputElement.value = "";
       }
+
+      setMemoContents(memoDiv.innerHTML);
 
       setImagesUpload([]);
     }
