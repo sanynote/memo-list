@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useNavigate, Outlet, useLocation} from "react-router-dom";
+import {useNavigate, Outlet, useLocation} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
 import {collection, getDocs} from "firebase/firestore";
 import {db} from "../../firebase";
@@ -19,6 +19,7 @@ function MemoList() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [memoList, setMemoList] = React.useState<MemoListType>([])
   const location = useLocation();
+
   React.useEffect(() => {
     isLoggedIn && getMemos(true).then()
   }, [])
@@ -29,7 +30,9 @@ function MemoList() {
       navigate('/signin')
     }
   }, [])
+
   const [outlet, setOutlet] = React.useState(false);
+
   React.useEffect(() => {
     const {pathname} = location;
     const splitPathName = pathname.split("/");
@@ -76,8 +79,8 @@ function MemoList() {
             )
           })}
         </div>
-          <div className='listMemoCreate'><WriteButton style={{backgroundColor: 'blue'}}
-                                                       onClick={() => navigate(`write/write`)}/></div>
+        <div className='listMemoCreate'><WriteButton style={{backgroundColor: 'blue'}}
+                                                     onClick={() => navigate(`write/write`)}/></div>
 
       </div>
     </div>
