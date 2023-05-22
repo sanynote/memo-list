@@ -175,16 +175,17 @@ function MemoDetail() {
   return (
     <div className='commonLayout'>
       <div className='commonLayoutPadding'>
-        <BackButton/>
-        <div>디테일페이지</div>
+        <BackButton />
         <input type="file" id='imageInput'
                accept="image/png, image/jpeg" multiple
                onChange={handleImageChange}
         />
         <div id="modifyDiv" contentEditable className='memoPad' dangerouslySetInnerHTML={{__html: memoTotal}}
              onInput={onChangeContent}/>
-        <div onClick={() => updateMemo()}>메모 수정 버튼</div>
-        <div onClick={() => deleteMemo()}>메모 삭제 버튼</div>
+        <div className='memoButton'>
+        <div className='memoUpdateButton' onClick={() => updateMemo()}>메모 수정</div>
+        <div className='memoDeleteButton' onClick={() => deleteMemo()}>메모 삭제</div>
+        </div>
       </div>
     </div>
   );

@@ -128,8 +128,8 @@ function MemoCreate() {
              id='createDiv'
         >
         </div>
-        <div onClick={() => createMemo()}>
-          메모 등록하기
+        <div className='memoButton'>
+          <div className='memoCreateButton' onClick={() => createMemo()}>메모 작성</div>
         </div>
       </div>
     </div>

@@ -33,6 +33,25 @@
     height: 100vh;
 }
 
+.memoCreateButton {
+    background-color: pink;
+    padding: 10px;
+
+}
+
+/* meme.detail */
+.memoUpdateButton {
+    background-color: pink;
+    padding: 10px;
+
+}
+.memoDeleteButton {
+    background-color: darkgray;
+    padding: 10px;
+    margin-left: 10px;
+
+}
+
 /*common*/
 
 .memoPad {
@@ -41,4 +60,11 @@
     background-color: cadetblue;
     overflow: scroll;
 }
+.memoButton{
+    display: flex;
+    justify-content: right;
+    margin-top: 10px;
+}
+
+
 

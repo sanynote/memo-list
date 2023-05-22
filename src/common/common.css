@@ -1,10 +1,19 @@
 .commonLayout {
     width: 100vw;
     height: 100vh;
-    /*background-color: #61dafb;*/
 }
 
 .commonLayoutPadding {
     padding: 10px;
 }
+
+.backButton {
+height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: pink;
+
+}
+
 
