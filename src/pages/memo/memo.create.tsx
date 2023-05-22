@@ -80,6 +80,7 @@ function MemoCreate() {
 
 
   const createMemo = async () => {
+    if (!memoTitle) return alert('텍스트 입력은 필수입니다.');
     try {
       const docRef = await addDoc(collection(db, uid), {
         title: memoTitle,
@@ -102,6 +103,10 @@ function MemoCreate() {
     const forTitle = textLineList.filter(item => item.length !== 0)
     setMemoTitle(forTitle[0]);
     setMemoContents(inputText)
+
+    console.log(document.getElementById('createDiv'), 'ddd')
+    console.log(inputText,'inputText')
+
 
   };
 

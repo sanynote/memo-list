@@ -1,13 +1,17 @@
 import React, {ChangeEvent} from 'react';
-import {doc, getDoc, deleteDoc, updateDoc,DocumentReference} from "firebase/firestore";
+import {doc, getDoc, deleteDoc, updateDoc, query, where, collection} from "firebase/firestore";
 import {db, storage} from "../../firebase";
 import {useLocation, useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
 import imageCompression from "browser-image-compression";
 import {getDownloadURL, ref, uploadBytes} from "firebase/storage";
 
+interface SystemError {
+  code: string;
+}
+
 function MemoDetail() {
-  const {updateMemoList} = useOutletContext<{ updateMemoList: Function }>();
+  const {updateMemoList, memoListId} = useOutletContext<{ updateMemoList: Function; memoListId:string[] }>();
   const [documentId, setDocumentId] = React.useState('')
   const [memoTitle, setMemoTitle] = React.useState('')
   const [memoContents, setMemoContents] = React.useState('')
@@ -35,11 +39,17 @@ function MemoDetail() {
 
   const getDetailMemo = async () => {
     if(!documentId) return ;
+    // const coll = collection(db, uid);
+    // const citiesRef = collection(db, uid);
+    // const q = query(citiesRef, where(documentId, "==", "CA"));
+    // console.log(coll,'qqq',documentId)
+    console.log(memoListId,'memoListId')
 
     setIsLoading(true)
 
     try {
-      const docRef = doc(db, uid,documentId);
+      const docRef = doc(db, uid, documentId);
+      console.log(docRef.id,'qqq')
       const memoData = await getDoc(docRef);
       const memoDetail = memoData.data()
       if (memoDetail === undefined) return;
@@ -47,9 +57,12 @@ function MemoDetail() {
       setMemoContents(memoDetail.contents)
       setMemoTotal(memoDetail.contents)
     } catch (e) {
-      console.log(e, '캐치에러 잡히는중')
+      const err = e as SystemError;
+      const errorCode = err.code
+      console.log(errorCode, '메모디테일에러')
     } finally {
       setIsLoading(false)
+      console.log('파이널리')
 
     }
   }
@@ -117,6 +130,7 @@ function MemoDetail() {
   }, [imagesUpload])
 
   const updateMemo = async () => {
+    if (!memoTitle) return alert('텍스트 입력은 필수입니다.');
     try {
       const updateMemo = doc(db, uid, documentId);
       await updateDoc(updateMemo, {title: memoTitle, contents: memoContents});

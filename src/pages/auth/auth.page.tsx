@@ -32,8 +32,11 @@ function AuthPage() {
         navigate('/list')
         console.log(data.user.email)
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((e) => {
+        const err = e as SystemError;
+        const errorCode = err.code
+        errorCode && setErrorMsg('구글 로그인에 실패했습니다.')
+
       });
   }
 

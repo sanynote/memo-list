@@ -18,6 +18,7 @@ function MemoList() {
   const uid = localStorage.getItem('uid')!
   const [isLoading, setIsLoading] = React.useState(true);
   const [memoList, setMemoList] = React.useState<MemoListType>([])
+  const [memoListId, setMemoListId] = React.useState<string[]>([])
   const location = useLocation();
 
   React.useEffect(() => {
@@ -40,6 +41,10 @@ function MemoList() {
     else setOutlet(false)
   }, [location]);
 
+  React.useEffect(()=>{
+    console.log(memoListId,'data')
+  },[memoListId])
+
   const updateMemoList = () => {
     return getMemos(false)
   }
@@ -59,10 +64,16 @@ function MemoList() {
       }
     })
     setMemoList(newMemoData)
+
+    const id = memoList.map(item=>item.id)
+    setMemoListId(id)
+
     if (isLoading) setIsLoading(false);
   }
 
-  if (outlet) return <Outlet context={{updateMemoList}}/>;
+  console.log(memoListId,'data')
+
+  if (outlet) return <Outlet context={{updateMemoList , memoListId}}/>;
   if (!isLoggedIn) return <div>로그인이 필요한 페이지입니다.</div>
   if (isLoading) return <h1>Loading...</h1>;
 
