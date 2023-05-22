@@ -11,7 +11,7 @@ interface SystemError {
 }
 
 function MemoDetail() {
-  const {updateMemoList, memoListId} = useOutletContext<{ updateMemoList: Function; memoListId:string[] }>();
+  const {updateMemoList} = useOutletContext<{ updateMemoList: Function }>();
   const [documentId, setDocumentId] = React.useState('')
   const [memoTitle, setMemoTitle] = React.useState('')
   const [memoContents, setMemoContents] = React.useState('')
@@ -38,21 +38,20 @@ function MemoDetail() {
   }
 
   const getDetailMemo = async () => {
-    if(!documentId) return ;
-    // const coll = collection(db, uid);
-    // const citiesRef = collection(db, uid);
-    // const q = query(citiesRef, where(documentId, "==", "CA"));
-    // console.log(coll,'qqq',documentId)
-    console.log(memoListId,'memoListId')
+    if (!documentId) return;
 
     setIsLoading(true)
 
     try {
       const docRef = doc(db, uid, documentId);
-      console.log(docRef.id,'qqq')
+      console.log(docRef.id, 'qqq')
       const memoData = await getDoc(docRef);
       const memoDetail = memoData.data()
-      if (memoDetail === undefined) return;
+      if (memoDetail === undefined) {
+        alert('존재하지 않는 메모입니다.');
+        navigate('/list')
+        return;
+      }
       setMemoTitle(memoDetail.title)
       setMemoContents(memoDetail.contents)
       setMemoTotal(memoDetail.contents)
@@ -175,7 +174,7 @@ function MemoDetail() {
   return (
     <div className='commonLayout'>
       <div className='commonLayoutPadding'>
-        <BackButton />
+        <BackButton/>
         <input type="file" id='imageInput'
                accept="image/png, image/jpeg" multiple
                onChange={handleImageChange}
@@ -183,8 +182,8 @@ function MemoDetail() {
         <div id="modifyDiv" contentEditable className='memoPad' dangerouslySetInnerHTML={{__html: memoTotal}}
              onInput={onChangeContent}/>
         <div className='memoButton'>
-        <div className='memoUpdateButton' onClick={() => updateMemo()}>메모 수정</div>
-        <div className='memoDeleteButton' onClick={() => deleteMemo()}>메모 삭제</div>
+          <div className='memoUpdateButton' onClick={() => updateMemo()}>메모 수정</div>
+          <div className='memoDeleteButton' onClick={() => deleteMemo()}>메모 삭제</div>
         </div>
       </div>
     </div>
