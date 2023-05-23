@@ -25,7 +25,6 @@ function MemoList() {
 
   React.useEffect(() => {
     isLoggedIn && getMemos(true).then()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn])
 
   React.useEffect(() => {
@@ -50,7 +49,7 @@ function MemoList() {
 
 
 
-  const getMemos = React.useCallback(async (isLoading: boolean) => {
+  const getMemos = async (isLoading: boolean) => {
     try {
       serverCheck()
       if (isLoading) setIsLoading(true);
@@ -76,7 +75,7 @@ function MemoList() {
     } finally {
       if (isLoading) setIsLoading(false);
     }
-  },[uid])
+  }
 
   if (outlet) return <Outlet context={{updateMemoList}}/>;
   if (!isLoggedIn) return <div>로그인이 필요한 페이지입니다.</div>
