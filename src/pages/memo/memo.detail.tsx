@@ -21,50 +21,50 @@ function MemoDetail() {
   const [imagesUpload, setImagesUpload] = React.useState<File[]>([])
 
   React.useEffect(() => {
+    const getDocumentId = () => {
+      const {pathname} = location;
+      const splitPathName = pathname.split("/");
+      const documentId = splitPathName[3]
+      setDocumentId(documentId)
+    }
+
     getDocumentId()
-  }, [])
+  }, [location])
 
   React.useEffect(() => {
-    getDetailMemo().then()
-  }, [documentId])
+    const getDetailMemo = async () => {
+      if (!documentId) return;
 
-  const getDocumentId = () => {
-    const {pathname} = location;
-    const splitPathName = pathname.split("/");
-    const documentId = splitPathName[3]
-    setDocumentId(documentId)
-  }
+      setIsLoading(true)
 
-  const getDetailMemo = async () => {
-    if (!documentId) return;
-
-    setIsLoading(true)
-
-    try {
-      serverCheck()
-      const docRef = doc(db, uid, documentId);
-      const memoData = await getDoc(docRef);
-      const memoDetail = memoData.data()
-      if (memoDetail === undefined) {
-        alert('존재하지 않는 메모입니다.');
-        navigate('/list')
-        return;
+      try {
+        serverCheck()
+        const docRef = doc(db, uid, documentId);
+        const memoData = await getDoc(docRef);
+        const memoDetail = memoData.data()
+        if (memoDetail === undefined) {
+          alert('존재하지 않는 메모입니다.');
+          navigate('/list')
+          return;
+        }
+        setMemoTitle(memoDetail.title)
+        setMemoContents(memoDetail.contents)
+        setMemoTotal(memoDetail.contents)
+      } catch (e) {
+        const err = e as SystemError;
+        const errorCode = err.code
+        if (errorCode === 'auth/network-request-failed') {
+          alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요')
+        } else {
+          alert('알 수 없는 에러로 메모 읽어오기에 실패했습니다.')
+        }
+      } finally {
+        setIsLoading(false)
       }
-      setMemoTitle(memoDetail.title)
-      setMemoContents(memoDetail.contents)
-      setMemoTotal(memoDetail.contents)
-    } catch (e) {
-      const err = e as SystemError;
-      const errorCode = err.code
-      if (errorCode === 'auth/network-request-failed') {
-        alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요')
-      } else {
-        alert('알 수 없는 에러로 메모 읽어오기에 실패했습니다.')
-      }
-    } finally {
-      setIsLoading(false)
     }
-  }
+    getDetailMemo().then()
+  }, [documentId, navigate, uid])
+
 
   React.useEffect(() => {
 
