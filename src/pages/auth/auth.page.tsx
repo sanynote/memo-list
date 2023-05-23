@@ -57,6 +57,9 @@ function AuthPage() {
         case 'auth/network-request-failed':
           alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요');
           break;
+        default:
+          setErrorMsg('알 수 없는 에러로 로그인을 할 수 없습니다.')
+          break
       }
     }
   }
@@ -66,6 +69,9 @@ function AuthPage() {
       serverCheck()
       setErrorMsg('');
       await createUserWithEmailAndPassword(authFire, email, password);
+      alert('회원가입이 완료되었습니다. 다시 로그인 해주세요')
+      signOutButton().then()
+      navigate('/signin')
       setEmail("");
       setPassword("");
 
@@ -88,6 +94,9 @@ function AuthPage() {
         case 'auth/internal-error':
           setErrorMsg('잘못된 요청입니다');
           break;
+        default:
+          setErrorMsg('알 수 없는 에러로 회원가입을 할 수 없습니다.')
+          break
       }
     }
   }

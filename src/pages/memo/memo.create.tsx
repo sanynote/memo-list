@@ -91,7 +91,6 @@ function MemoCreate() {
         title: memoTitle,
         contents: memoContents,
       });
-      console.log("Document written with ID: ", docRef.id);
 
       updateMemoList()
       navigate(`/list`)
@@ -114,10 +113,6 @@ function MemoCreate() {
     const forTitle = textLineList.filter(item => item.length !== 0)
     setMemoTitle(forTitle[0]);
     setMemoContents(inputText)
-
-    console.log(document.getElementById('createDiv'), 'ddd')
-    console.log(inputText, 'inputText')
-
 
   };
 

@@ -43,7 +43,6 @@ function MemoDetail() {
     try {
       serverCheck()
       const docRef = doc(db, uid, documentId);
-      console.log(docRef.id, 'qqq')
       const memoData = await getDoc(docRef);
       const memoDetail = memoData.data()
       if (memoDetail === undefined) {
@@ -177,7 +176,6 @@ function MemoDetail() {
   };
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.target.files && setImagesUpload([...Array.from(e.target.files)])
-
   }
 
 
