@@ -9,7 +9,7 @@ function BackButton() {
     const {pathname} = location;
     const splitPathName = pathname.split("/");
 
-    if (splitPathName.length > 2) {
+    if (splitPathName.length > 3) {
       setIsWriting(true)
     } else setIsWriting(false)
 

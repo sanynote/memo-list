@@ -64,7 +64,6 @@ function MemoDetail() {
       }
     } finally {
       setIsLoading(false)
-
     }
   }
 
@@ -127,7 +126,7 @@ function MemoDetail() {
       setMemoContents(memoDiv.innerHTML);
       setImagesUpload([]);
     }
-    uploadAndAppendImage();
+    uploadAndAppendImage().then();
   }, [imagesUpload])
 
   const updateMemo = async () => {
@@ -138,8 +137,6 @@ function MemoDetail() {
       await updateDoc(updateMemo, {title: memoTitle, contents: memoContents});
       await updateMemoList()
       navigate(`/list`)
-      console.log('메모 수정 성공')
-
     } catch (e) {
       const err = e as SystemError;
       const errorCode = err.code
@@ -158,7 +155,6 @@ function MemoDetail() {
       await deleteDoc(detailDoc);
       updateMemoList()
       navigate(`/list`)
-      console.log('메모 삭제 성공')
     } catch (e) {
       const err = e as SystemError;
       const errorCode = err.code

@@ -23,17 +23,16 @@ function AuthPage() {
 
   const googleButton = () => {
     const provider = new GoogleAuthProvider();
+
     signInWithPopup(authFire, provider)
       .then((data) => {
         localStorage.setItem('uid', data.user.uid)
         navigate('/list')
-        console.log(data.user.email)
       })
       .catch((e) => {
         const err = e as SystemError;
         const errorCode = err.code
-        console.log(errorCode,'errorCode')
-        errorCode && setErrorMsg('구글 로그인에 실패했습니다.')
+        errorCode && setErrorMsg('알 수 없는 에러로 구글 로그인에 실패했습니다.')
 
       });
   }

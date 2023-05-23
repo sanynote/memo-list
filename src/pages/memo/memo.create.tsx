@@ -116,7 +116,7 @@ function MemoCreate() {
     setMemoContents(inputText)
 
     console.log(document.getElementById('createDiv'), 'ddd')
-    console.log(inputText,'inputText')
+    console.log(inputText, 'inputText')
 
 
   };

@@ -38,7 +38,7 @@ function MemoList() {
   React.useEffect(() => {
     const {pathname} = location;
     const splitPathName = pathname.split("/");
-    console.log(splitPathName,'split')
+    console.log(splitPathName, 'split')
     const outletCheck = splitPathName.length > 3
     setOutlet(outletCheck)
   }, [location]);
@@ -76,10 +76,7 @@ function MemoList() {
     } finally {
       if (isLoading) setIsLoading(false);
     }
-
-
   }
-
 
   if (outlet) return <Outlet context={{updateMemoList}}/>;
   if (!isLoggedIn) return <div>로그인이 필요한 페이지입니다.</div>

@@ -1,4 +1,3 @@
-
 import {SystemError} from "../interface/error.interface";
 
 export const serverCheck = () => {
