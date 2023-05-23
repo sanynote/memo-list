@@ -5,10 +5,8 @@ import {useLocation, useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
 import imageCompression from "browser-image-compression";
 import {getDownloadURL, ref, uploadBytes} from "firebase/storage";
-
-interface SystemError {
-  code: string;
-}
+import {serverCheck} from "../../function/server.check.func";
+import {SystemError} from "../../interface/error.interface";
 
 function MemoDetail() {
   const {updateMemoList} = useOutletContext<{ updateMemoList: Function }>();
@@ -43,6 +41,7 @@ function MemoDetail() {
     setIsLoading(true)
 
     try {
+      serverCheck()
       const docRef = doc(db, uid, documentId);
       console.log(docRef.id, 'qqq')
       const memoData = await getDoc(docRef);
@@ -58,10 +57,13 @@ function MemoDetail() {
     } catch (e) {
       const err = e as SystemError;
       const errorCode = err.code
-      console.log(errorCode, '메모디테일에러')
+      if (errorCode === 'auth/network-request-failed') {
+        alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요')
+      } else {
+        alert('알 수 없는 에러로 메모 읽어오기에 실패했습니다.')
+      }
     } finally {
       setIsLoading(false)
-      console.log('파이널리')
 
     }
   }
@@ -131,6 +133,7 @@ function MemoDetail() {
   const updateMemo = async () => {
     if (!memoTitle) return alert('텍스트 입력은 필수입니다.');
     try {
+      serverCheck()
       const updateMemo = doc(db, uid, documentId);
       await updateDoc(updateMemo, {title: memoTitle, contents: memoContents});
       await updateMemoList()
@@ -138,19 +141,32 @@ function MemoDetail() {
       console.log('메모 수정 성공')
 
     } catch (e) {
-      console.log(e, '메모 수정 실패')
+      const err = e as SystemError;
+      const errorCode = err.code
+      if (errorCode === 'auth/network-request-failed') {
+        alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요')
+      } else {
+        alert('알 수 없는 에러로 메모 수정에 실패했습니다.')
+      }
     }
   }
 
   const deleteMemo = async () => {
     try {
+      serverCheck()
       const detailDoc = doc(db, uid, documentId);
       await deleteDoc(detailDoc);
       updateMemoList()
       navigate(`/list`)
       console.log('메모 삭제 성공')
     } catch (e) {
-      console.log(e, '메모 삭제 실패')
+      const err = e as SystemError;
+      const errorCode = err.code
+      if (errorCode === 'auth/network-request-failed') {
+        alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요')
+      } else {
+        alert('알 수 없는 에러로 메모 삭제에 실패했습니다.')
+      }
     }
   }
 

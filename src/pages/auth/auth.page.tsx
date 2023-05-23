@@ -10,11 +10,8 @@ import {
 import {authFire} from "../../firebase";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../../auth.context.provider";
-
-interface SystemError {
-  code: string;
-}
-
+import {serverCheck} from "../../function/server.check.func";
+import {SystemError} from "../../interface/error.interface";
 
 function AuthPage() {
   const isLoggedIn = useContext(AuthContext);
@@ -35,6 +32,7 @@ function AuthPage() {
       .catch((e) => {
         const err = e as SystemError;
         const errorCode = err.code
+        console.log(errorCode,'errorCode')
         errorCode && setErrorMsg('구글 로그인에 실패했습니다.')
 
       });
@@ -42,6 +40,7 @@ function AuthPage() {
 
   const signInButton = async () => {
     try {
+      serverCheck()
       setErrorMsg('');
       const curUserInfo = await signInWithEmailAndPassword(authFire, email, password);
       localStorage.setItem('uid', curUserInfo.user.uid)
@@ -57,7 +56,7 @@ function AuthPage() {
           setErrorMsg('비밀번호가 일치하지 않습니다.');
           break;
         case 'auth/network-request-failed':
-          setErrorMsg('네트워크 연결에 실패했습니다');
+          alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요');
           break;
       }
     }
@@ -65,6 +64,7 @@ function AuthPage() {
 
   const signUpButton = async () => {
     try {
+      serverCheck()
       setErrorMsg('');
       await createUserWithEmailAndPassword(authFire, email, password);
       setEmail("");
@@ -81,7 +81,7 @@ function AuthPage() {
           setErrorMsg('비밀번호는 6자리 이상이어야 합니다');
           break;
         case 'auth/network-request-failed':
-          setErrorMsg('네트워크 연결에 실패했습니다');
+          alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요');
           break;
         case 'auth/invalid-email':
           setErrorMsg('잘못된 이메일 형식입니다');
@@ -94,14 +94,18 @@ function AuthPage() {
   }
   const signOutButton = async () => {
     try {
-
-    await signOut(authFire)
-    localStorage.removeItem('uid')
-    navigate('/signin')
+      serverCheck()
+      await signOut(authFire)
+      localStorage.removeItem('uid')
+      navigate('/signin')
     } catch (e) {
       const err = e as SystemError;
       const errorCode = err.code
-      if(errorCode) setErrorMsg('로그아웃에 실패했습니다.')
+      if (errorCode === 'auth/network-request-failed') {
+        alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요')
+      } else {
+        setErrorMsg('알 수 없는 에러로 로그아웃에 실패했습니다.')
+      }
     }
   }
   if (isLoggedIn) return (

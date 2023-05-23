@@ -7,6 +7,8 @@ import '../../common/common.css'
 import {useNavigate, useOutletContext} from "react-router-dom";
 import BackButton from "../../common/back.button";
 import imageCompression from "browser-image-compression";
+import {SystemError} from "../../interface/error.interface";
+import {serverCheck} from "../../function/server.check.func";
 
 function MemoCreate() {
   const {updateMemoList} = useOutletContext<{ updateMemoList: Function }>();
@@ -84,6 +86,7 @@ function MemoCreate() {
   const createMemo = async () => {
     if (!memoTitle) return alert('텍스트 입력은 필수입니다.');
     try {
+      serverCheck()
       const docRef = await addDoc(collection(db, uid), {
         title: memoTitle,
         contents: memoContents,
@@ -93,7 +96,13 @@ function MemoCreate() {
       updateMemoList()
       navigate(`/list`)
     } catch (e) {
-      console.error("Error adding document: ", e);
+      const err = e as SystemError;
+      const errorCode = err.code
+      if (errorCode === 'auth/network-request-failed') {
+        alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요')
+      } else {
+        alert('알 수 없는 에러로 메모 작성에 실패했습니다.')
+      }
     }
   }
 

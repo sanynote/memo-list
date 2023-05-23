@@ -6,6 +6,8 @@ import {db} from "../../firebase";
 import './memo.css'
 import BackButton from "../../common/back.button";
 import {ReactComponent as WriteButton} from "../../assets/write_button.svg";
+import {SystemError} from "../../interface/error.interface";
+import {serverCheck} from "../../function/server.check.func";
 
 type MemoListType = {
   title: string,
@@ -48,19 +50,33 @@ function MemoList() {
   const navigate = useNavigate()
 
   const getMemos = async (isLoading: boolean) => {
-    if (isLoading) setIsLoading(true);
-    const memoData = await getDocs(collection(db, uid));
-    const newMemoData = memoData.docs.map((doc) => {
-      const data = doc.data()
-      return {
-        title: data.title,
-        contents: data.contents,
-        id: doc.id
-      }
-    })
-    setMemoList(newMemoData)
+    try {
+      serverCheck()
+      if (isLoading) setIsLoading(true);
+      const memoData = await getDocs(collection(db, uid));
+      const newMemoData = memoData.docs.map((doc) => {
+        const data = doc.data()
+        return {
+          title: data.title,
+          contents: data.contents,
+          id: doc.id
+        }
+      })
+      setMemoList(newMemoData)
 
-    if (isLoading) setIsLoading(false);
+    } catch (e) {
+      const err = e as SystemError;
+      const errorCode = err.code
+      if (errorCode === 'auth/network-request-failed') {
+        alert('네트워크 연결에 실패했습니다. 와이파이 연결을 확인해주세요')
+      } else {
+        alert('알 수 없는 에러로 메모 읽어오기에 실패했습니다.')
+      }
+    } finally {
+      if (isLoading) setIsLoading(false);
+    }
+
+
   }
 
 
