@@ -93,9 +93,9 @@ function MemoList() {
               </div>
             )
           })}
+        <WriteButton className='listMemoCreate'
+                      onClick={() => navigate(`write/write`)}/>
         </div>
-        <div className='listMemoCreate'><WriteButton style={{backgroundColor: 'blue'}}
-                                                     onClick={() => navigate(`write/write`)}/></div>
 
       </div>
     </div>
