@@ -87,12 +87,12 @@ function MemoCreate() {
     if (!memoTitle) return alert('텍스트 입력은 필수입니다.');
     try {
       serverCheck()
-      const docRef = await addDoc(collection(db, uid), {
+      await addDoc(collection(db, uid), {
         title: memoTitle,
         contents: memoContents,
       });
 
-      updateMemoList()
+      await updateMemoList()
       navigate(`/list`)
     } catch (e) {
       const err = e as SystemError;

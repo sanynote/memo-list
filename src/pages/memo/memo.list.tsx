@@ -38,7 +38,7 @@ function MemoList() {
   React.useEffect(() => {
     const {pathname} = location;
     const splitPathName = pathname.split("/");
-    const outletCheck = splitPathName.length > 3
+    const outletCheck = splitPathName.length > 2
     setOutlet(outletCheck)
   }, [location]);
 

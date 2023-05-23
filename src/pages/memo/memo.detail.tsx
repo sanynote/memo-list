@@ -152,7 +152,7 @@ function MemoDetail() {
       serverCheck()
       const detailDoc = doc(db, uid, documentId);
       await deleteDoc(detailDoc);
-      updateMemoList()
+      await updateMemoList()
       navigate(`/list`)
     } catch (e) {
       const err = e as SystemError;
