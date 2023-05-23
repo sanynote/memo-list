@@ -21,24 +21,26 @@ function MemoList() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [memoList, setMemoList] = React.useState<MemoListType>([])
   const location = useLocation();
+  const navigate = useNavigate()
 
   React.useEffect(() => {
     isLoggedIn && getMemos(true).then()
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn])
 
   React.useEffect(() => {
     if (!isLoggedIn) {
       alert('로그인이 필요한 서비스입니다. 로그인 화면으로 이동합니다.')
       navigate('/signin')
     }
-  }, [])
+  }, [isLoggedIn,navigate])
 
   const [outlet, setOutlet] = React.useState(false);
 
   React.useEffect(() => {
     const {pathname} = location;
     const splitPathName = pathname.split("/");
-    const outletCheck = splitPathName.length > 2
+    const outletCheck = splitPathName.length > 3
     setOutlet(outletCheck)
   }, [location]);
 
@@ -47,9 +49,8 @@ function MemoList() {
   }
 
 
-  const navigate = useNavigate()
 
-  const getMemos = async (isLoading: boolean) => {
+  const getMemos = React.useCallback(async (isLoading: boolean) => {
     try {
       serverCheck()
       if (isLoading) setIsLoading(true);
@@ -75,7 +76,7 @@ function MemoList() {
     } finally {
       if (isLoading) setIsLoading(false);
     }
-  }
+  },[uid])
 
   if (outlet) return <Outlet context={{updateMemoList}}/>;
   if (!isLoggedIn) return <div>로그인이 필요한 페이지입니다.</div>
