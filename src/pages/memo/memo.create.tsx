@@ -17,6 +17,7 @@ function MemoCreate() {
   const [memoContents, setMemoContents] = React.useState("")
   const navigate = useNavigate()
   const [imagesUpload, setImagesUpload] = React.useState<File[]>([])
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
 
@@ -31,7 +32,9 @@ function MemoCreate() {
       !focusNode ||
       (
         focusNode.parentElement !== memoDiv &&
+        // 그냥 div에 포커스가 가 있으면 한번만 올라감
         focusNode.parentElement?.parentElement !== memoDiv);
+        // text에 포커스가 가 있으면 두번 올라가니 나옴
 
     const uploadAndAppendImage = async () => {
       if (!memoDiv) return;
@@ -43,7 +46,6 @@ function MemoCreate() {
 
       const imageTagArray: HTMLImageElement[] = await Promise.all(
         imagesUpload
-          .filter((imageFile) => imageFile)
           .map(async (imageFile, index) => {
 
             const compressedFile = await imageCompression(imageFile, options);
@@ -70,13 +72,7 @@ function MemoCreate() {
           .forEach((imageTag) => (focusNode as HTMLElement).after(imageTag));
       }
 
-      const imageInputElement = document.getElementById("imageInput");
-      if (imageInputElement instanceof HTMLInputElement) {
-        imageInputElement.value = "";
-      }
-
       setMemoContents(memoDiv.innerHTML);
-
       setImagesUpload([]);
     }
     uploadAndAppendImage().then();
@@ -85,6 +81,7 @@ function MemoCreate() {
 
   const createMemo = async () => {
     if (!memoTitle) return alert('텍스트 입력은 필수입니다.');
+    setIsLoading(true)
     try {
       serverCheck()
       await addDoc(collection(db, uid), {
@@ -102,6 +99,8 @@ function MemoCreate() {
       } else {
         alert('알 수 없는 에러로 메모 작성에 실패했습니다.')
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -118,8 +117,9 @@ function MemoCreate() {
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.target.files && setImagesUpload([...Array.from(e.target.files)])
-
   }
+
+  if (isLoading) return <h1>Loading...</h1>;
 
 
   return (

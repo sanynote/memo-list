@@ -77,7 +77,7 @@ function MemoDetail() {
     const focusNode = selection?.focusNode;
     const isAppendLast =
       !focusNode ||
-      (focusNode !== memoDiv &&
+      (
         focusNode.parentElement !== memoDiv &&
         focusNode.parentElement?.parentElement !== memoDiv);
 
@@ -91,7 +91,6 @@ function MemoDetail() {
 
       const imageTagArray: HTMLImageElement[] = await Promise.all(
         imagesUpload
-          .filter((imageFile) => imageFile)
           .map(async (imageFile, index) => {
 
             const compressedFile = await imageCompression(imageFile, options);
@@ -116,11 +115,6 @@ function MemoDetail() {
         imageTagArray
           .reverse()
           .forEach((imageTag) => (focusNode as HTMLElement).after(imageTag));
-      }
-
-      const imageInputElement = document.getElementById("imageInput");
-      if (imageInputElement instanceof HTMLInputElement) {
-        imageInputElement.value = "";
       }
       setMemoContents(memoDiv.innerHTML);
       setImagesUpload([]);
@@ -174,6 +168,7 @@ function MemoDetail() {
     setMemoTitle(forTitle[0]);
     setMemoContents(inputText)
   };
+
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.target.files && setImagesUpload([...Array.from(e.target.files)])
   }

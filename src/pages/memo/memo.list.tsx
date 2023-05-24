@@ -24,7 +24,7 @@ function MemoList() {
   const navigate = useNavigate()
 
   React.useEffect(() => {
-    isLoggedIn && getMemos(true).then()
+    isLoggedIn && getMemos().then()
   }, [isLoggedIn])
 
   React.useEffect(() => {
@@ -44,12 +44,12 @@ function MemoList() {
   }, [location]);
 
   const updateMemoList = () => {
-    return getMemos(false)
+    return getMemos()
   }
 
 
 
-  const getMemos = async (isLoading: boolean) => {
+  const getMemos = async () => {
     try {
       serverCheck()
       if (isLoading) setIsLoading(true);
