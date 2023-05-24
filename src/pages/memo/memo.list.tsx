@@ -13,13 +13,13 @@ type MemoListType = {
   title: string,
   contents: string
   id: string
-}[];
+};
 
 function MemoList() {
   const isLoggedIn = React.useContext(AuthContext);
   const uid = localStorage.getItem('uid')!
   const [isLoading, setIsLoading] = React.useState(true);
-  const [memoList, setMemoList] = React.useState<MemoListType>([])
+  const [memoList, setMemoList] = React.useState<MemoListType[]>([])
   const location = useLocation();
   const navigate = useNavigate()
 

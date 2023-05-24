@@ -160,7 +160,7 @@ function MemoDetail() {
   }
 
   const onChangeContent = (event: ChangeEvent<HTMLInputElement>) => {
-    const inputDiv = event.target as HTMLDivElement;
+    const inputDiv = event.target
     const inputText = inputDiv.innerHTML;
     const inputTitleText = inputDiv.innerText;
     const textLineList = inputTitleText.split("\n");

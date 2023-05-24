@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const AuthContextProvider = ({children} : Props) => {
-  const uidCheck = localStorage.getItem('uid') ? true : false
+  const uidCheck = !!localStorage.getItem('uid')
   const [isLoggedIn, setIsLoggedIn] = React.useState(uidCheck);
   React.useEffect(() => {
     onAuthStateChanged(authFire, (user) => {
