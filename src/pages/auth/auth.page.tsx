@@ -68,10 +68,8 @@ function AuthPage() {
     try {
       serverCheck()
       setErrorMsg('');
-      await createUserWithEmailAndPassword(authFire, email, password);
-      alert('회원가입이 완료되었습니다. 다시 로그인 해주세요')
-      signOutButton().then()
-      navigate('/signin')
+      const newUserInfo = await createUserWithEmailAndPassword(authFire, email, password);
+      localStorage.setItem('uid', newUserInfo.user.uid)
       setEmail("");
       setPassword("");
 
