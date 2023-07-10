@@ -5,6 +5,10 @@
   height: 100vh;
 }
 
+.signInArea {
+  background-color: rebeccapurple;
+  flex-direction: row;
+}
 
 
 @media (prefers-reduced-motion: no-preference) {

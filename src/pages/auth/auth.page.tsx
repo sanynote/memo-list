@@ -126,20 +126,23 @@ function AuthPage() {
 
     <div className="backArea">
       <div>
-        <button onClick={() => googleButton()}>구글 계정 로그인</button>
+        <button onClick={() => googleButton()}>구글 계정으로 로그인하기</button>
       </div>
       <div>
         <h2>
-          email로 회원가입 or 로그인
+          로그인이 필요한 메모장 앱입니다.
         </h2>
+        <div className='signInArea'>
+
         <div>
-          <label>e-mail</label><input type='email' value={email} onChange={e => setEmail(e.target.value)}/>
+          <input type='email' value={email} placeholder='e-mail' onChange={e => setEmail(e.target.value)}/>
         </div>
         <div>
-          <label>password</label><input type='password' value={password} onChange={e => setPassword(e.target.value)}/>
+          <input type='password' value={password} placeholder='password' onChange={e => setPassword(e.target.value)}/>
         </div>
         <button type="submit" onClick={() => signInButton()}>로그인</button>
-        <button type="submit" onClick={() => signUpButton()}>회원가입하기</button>
+        </div>
+        {/*<button type="submit" onClick={() => signUpButton()}>회원가입하기</button>*/}
       </div>
       {errorMsg && <div>{errorMsg}</div>}
     </div>
