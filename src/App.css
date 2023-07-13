@@ -6,10 +6,23 @@
 }
 
 .signInArea {
-  background-color: rebeccapurple;
+  display: flex;
   flex-direction: row;
+  height:45px;
+  align-items: center;
+  justify-content: center;
 }
 
+.field {
+  width: 40%;
+}
+
+.button {
+  width: 18%;
+  height: 100%;
+  background-color: #caf;
+  line-height: 45px;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

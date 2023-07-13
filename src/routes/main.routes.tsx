@@ -1,6 +1,7 @@
 import {Navigate, createBrowserRouter} from "react-router-dom";
 import NotFound from "../pages/not.found";
-import AuthPage from "../pages/auth/auth.page";
+import SignInPage from "../pages/auth/sign.in.page";
+import SignUpPage from "../pages/auth/sign.up.page";
 import MemoList from "../pages/memo/memo.list";
 import React from "react";
 import MemoDetail from "../pages/memo/memo.detail";
@@ -17,8 +18,13 @@ const routes = [
   },
   {
     path: '/signin',
-    name: '로그인/회원가입',
-    element: <AuthPage/>
+    name: '로그인',
+    element: <SignInPage/>
+  },
+  {
+    path: '/signup',
+    name: '회원가입',
+    element: <SignUpPage/>
   },
   {
     path: '/list',
